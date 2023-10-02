@@ -14,6 +14,7 @@
         public string? Phone { get; set; }
         public string? Picture { get; set; }
         public string? Password { get; set; }
+        public string? SessionID { get; set; }
         // Navigation Property for BankAccounts
         public virtual ICollection<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
     }
