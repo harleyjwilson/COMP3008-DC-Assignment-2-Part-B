@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
+using System.Threading.Tasks.Dataflow;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
@@ -19,12 +21,22 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                var cookieValue = Request.Cookies["SessionID"];
-                if (cookieValue == "1234567")
+                // var cookieSessionID = Request.Cookies["SessionID"];
+                // using (var client = new HttpClient())
+                // {
+                //     client.BaseAddress = new Uri("http://localhost:5181/");
+                //     var task = client.GetFromJsonAsync<User>("api/users/" + Request.Cookies["Username"]);
+                //     task.Wait();
+                //     var verifyUser = task.Result;
+                //     if (verifyUser != null && verifyUser.SessionID == cookieSessionID)
+                //     {
+                //         return PartialView("LoginAuthenticatedView");
+                //     }
+                // }
+                if (verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     return PartialView("LoginAuthenticatedView");
                 }
-
             }
             // Return the partial view as HTML
             return PartialView("LoginDefaultView");
@@ -36,12 +48,15 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                var cookieValue = Request.Cookies["SessionID"];
-                if (cookieValue == "1234567")
+                // var cookieValue = Request.Cookies["SessionID"];
+                // if (cookieValue == "1234567")
+                // {
+                //     return PartialView("LoginAuthenticatedView");
+                // }
+                if (verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     return PartialView("LoginAuthenticatedView");
                 }
-
             }
             // Return the partial view as HTML
             return PartialView("LoginErrorView");
@@ -66,7 +81,14 @@ namespace WebApp.Controllers
                 var verifyUser = task.Result;
                 if (verifyUser != null && user.Username == verifyUser.Username && user.Password == verifyUser.Password)
                 {
-                    Response.Cookies.Append("SessionID", "1234567");
+                    string sessionID = generateSessionID();
+                    verifyUser.SessionID = sessionID;
+                    Response.Cookies.Append("Username", user.Username);
+                    Response.Cookies.Append("SessionID", sessionID);
+                    Console.WriteLine("Login Update: " + verifyUser.Username);
+                    Console.WriteLine("Login Update: " + verifyUser.SessionID);
+                    var updateTask = client.PutAsJsonAsync<User>("api/users/" + user.Username, verifyUser);
+                    updateTask.Wait();
                     response = new { login = true };
                 }
             }
@@ -82,6 +104,46 @@ namespace WebApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public static bool verifySessionID(string? username, string? sessionID)
+        {
+            Console.WriteLine("verifySessionID Username: " + username);
+            Console.WriteLine("verifySessionID SessionID: " + sessionID);
+            if (username == null || sessionID == null)
+            {
+                return false;
+            }
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5181/");
+                var task = client.GetFromJsonAsync<User>("api/users/" + username);
+                task.Wait();
+                var verifyUser = task.Result;
+                Console.WriteLine("VerifyUser: " + verifyUser.Username);
+                Console.WriteLine("VerifyUser: " + verifyUser.SessionID);
+                if (verifyUser != null && verifyUser.SessionID == sessionID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private string generateSessionID()
+        {
+            const string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const int length = 32;
+            string sessionID = "";
+            Random random = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = random.Next(charset.Length);
+                sessionID += charset[index];
+            }
+
+            return sessionID;
         }
     }
 }

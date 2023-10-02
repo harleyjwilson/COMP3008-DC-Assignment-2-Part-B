@@ -102,6 +102,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             existingUser.Phone = updatedUser.Phone;
             existingUser.Password = updatedUser.Password;
             existingUser.Picture = updatedUser.Picture;
+            existingUser.SessionID = updatedUser.SessionID;
 
             _context.Entry(existingUser).State = EntityState.Modified;
 
