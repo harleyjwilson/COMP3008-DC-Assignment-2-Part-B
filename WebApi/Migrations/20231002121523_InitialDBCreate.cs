@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace LocalDBWebApiUsingEF.Migrations
+namespace WebApi.Migrations
 {
     /// <inheritdoc />
     public partial class InitialDBCreate : Migration
@@ -22,7 +22,8 @@ namespace LocalDBWebApiUsingEF.Migrations
                     Address = table.Column<string>(type: "TEXT", nullable: true),
                     Phone = table.Column<string>(type: "TEXT", nullable: true),
                     Picture = table.Column<string>(type: "TEXT", nullable: true),
-                    Password = table.Column<string>(type: "TEXT", nullable: true)
+                    Password = table.Column<string>(type: "TEXT", nullable: true),
+                    SessionID = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,12 +74,12 @@ namespace LocalDBWebApiUsingEF.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Username", "Address", "Email", "Name", "Password", "Phone", "Picture" },
+                columns: new[] { "Username", "Address", "Email", "Name", "Password", "Phone", "Picture", "SessionID" },
                 values: new object[,]
                 {
-                    { "mike", "Northbridge", "email3@gmail.com", "Mike", "mypassword3", "333-333-3333", "/images/women1.jpeg" },
-                    { "mistry", "Victoria Park", "email2@gmail.com", "Mistry", "mypassword", "222-222-2222", "/images/man2.jpeg" },
-                    { "sajib", "Bently", "email1@gmail.com", "Sajib", "mypassword1", "111-111-1111", "/images/man1.jpeg" }
+                    { "mike", "Northbridge", "email3@gmail.com", "Mike", "mypassword3", "333-333-3333", "/resources/images/women1.jpeg", null },
+                    { "mistry", "Victoria Park", "email2@gmail.com", "Mistry", "mypassword", "222-222-2222", "/resources/images/man2.jpeg", null },
+                    { "sajib", "Bently", "email1@gmail.com", "Sajib", "mypassword1", "111-111-1111", "/resources/images/man1.jpeg", null }
                 });
 
             migrationBuilder.InsertData(

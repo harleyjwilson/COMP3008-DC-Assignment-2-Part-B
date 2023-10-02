@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LocalDBWebApiUsingEF.Migrations
+namespace WebApi.Migrations
 {
     [DbContext(typeof(DBManager))]
-    [Migration("20230923125313_InitialDBCreate")]
+    [Migration("20231002121523_InitialDBCreate")]
     partial class InitialDBCreate
     {
         /// <inheritdoc />
@@ -111,6 +111,9 @@ namespace LocalDBWebApiUsingEF.Migrations
                     b.Property<string>("Picture")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("SessionID")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Username");
 
                     b.ToTable("Users");
@@ -124,7 +127,7 @@ namespace LocalDBWebApiUsingEF.Migrations
                             Name = "Sajib",
                             Password = "mypassword1",
                             Phone = "111-111-1111",
-                            Picture = "/images/man1.jpeg"
+                            Picture = "/resources/images/man1.jpeg"
                         },
                         new
                         {
@@ -134,7 +137,7 @@ namespace LocalDBWebApiUsingEF.Migrations
                             Name = "Mistry",
                             Password = "mypassword",
                             Phone = "222-222-2222",
-                            Picture = "/images/man2.jpeg"
+                            Picture = "/resources/images/man2.jpeg"
                         },
                         new
                         {
@@ -144,7 +147,7 @@ namespace LocalDBWebApiUsingEF.Migrations
                             Name = "Mike",
                             Password = "mypassword3",
                             Phone = "333-333-3333",
-                            Picture = "/images/women1.jpeg"
+                            Picture = "/resources/images/women1.jpeg"
                         });
                 });
 
