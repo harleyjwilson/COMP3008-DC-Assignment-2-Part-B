@@ -12,6 +12,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult GetView()
         {
+            Response.Cookies.Delete("Username");
             Response.Cookies.Delete("SessionID");
             return PartialView("LogoutView");
         }

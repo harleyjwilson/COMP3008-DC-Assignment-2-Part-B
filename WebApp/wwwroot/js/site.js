@@ -86,7 +86,7 @@ function hasSessionID() {
 }
 
 function displayLogout() {
-  console.log(hasSessionID());
+  console.log("Have SessionID: " + hasSessionID());
       if (hasSessionID()) {
         document.getElementById("LogoutButton").style.display = "block";
         document.getElementById("LoginButton").style.display = "none";

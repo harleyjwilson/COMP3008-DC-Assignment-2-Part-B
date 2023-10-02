@@ -1,6 +1,9 @@
-﻿@{
+﻿@* @model WebApp.Models.User *@
+
+@{
     ViewData["Title"] = "Account";
 }
 <p id="status">
-    Welcome, user!
+    Welcome, <span id="accountSpanUsername">@(((User)ViewData["Users"]).Name)</span>!
+
 </p>
