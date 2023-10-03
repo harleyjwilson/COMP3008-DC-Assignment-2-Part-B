@@ -17,6 +17,49 @@ namespace WebApi.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
 
+            modelBuilder.Entity("LocalDBWebApiUsingEF.Models.Admin", b =>
+                {
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Picture")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SessionID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Username");
+
+                    b.ToTable("Admins");
+
+                    b.HasData(
+                        new
+                        {
+                            Username = "admin",
+                            Address = "Sydney",
+                            Email = "email0@gmail.com",
+                            Name = "Admin User",
+                            Password = "adminpassword",
+                            Phone = "000-000-0000",
+                            Picture = "/resources/images/man1.jpeg"
+                        });
+                });
+
             modelBuilder.Entity("LocalDBWebApiUsingEF.Models.BankAccount", b =>
                 {
                     b.Property<int>("AccountNumber")
@@ -144,7 +187,8 @@ namespace WebApi.Migrations
                             Name = "Mike",
                             Password = "mypassword3",
                             Phone = "333-333-3333",
-                            Picture = "/resources/images/women1.jpeg"
+                            Picture = "/resources/images/women1.jpeg",
+                            SessionID = "3Jxh7KlN8ZbA2GfWYs9RmP1oXsDlTz6Q"
                         });
                 });
 
