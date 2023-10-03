@@ -56,7 +56,7 @@ namespace WebApi.Migrations
                             Name = "Admin User",
                             Password = "adminpassword",
                             Phone = "000-000-0000",
-                            Picture = "/resources/images/man1.jpeg"
+                            Picture = "/resources/images/man1.jpg"
                         });
                 });
 
@@ -167,7 +167,7 @@ namespace WebApi.Migrations
                             Name = "Sajib",
                             Password = "mypassword1",
                             Phone = "111-111-1111",
-                            Picture = "/resources/images/man1.jpeg"
+                            Picture = "/resources/images/man1.jpg"
                         },
                         new
                         {
@@ -177,7 +177,7 @@ namespace WebApi.Migrations
                             Name = "Mistry",
                             Password = "mypassword",
                             Phone = "222-222-2222",
-                            Picture = "/resources/images/man2.jpeg"
+                            Picture = "/resources/images/man1.jpg"
                         },
                         new
                         {
@@ -187,8 +187,7 @@ namespace WebApi.Migrations
                             Name = "Mike",
                             Password = "mypassword3",
                             Phone = "333-333-3333",
-                            Picture = "/resources/images/women1.jpeg",
-                            SessionID = "3Jxh7KlN8ZbA2GfWYs9RmP1oXsDlTz6Q"
+                            Picture = "/resources/images/man1.jpg"
                         });
                 });
 

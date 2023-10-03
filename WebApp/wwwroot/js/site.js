@@ -63,10 +63,11 @@ function performAuth() {
       const jsonObject = data;
       if (jsonObject.login) {
         loadView("authview");
-        displayLogout();
+        
       } else {
         loadView("error");
       }
+      displayLogout();
     })
     .catch((error) => {
       // Handle any errors that occurred during the fetch
@@ -95,6 +96,74 @@ function displayLogout() {
         document.getElementById("LoginButton").style.display = "block";
       }
 }
+
+function showEditForm() {
+    console.log("Button Clicked!"); // Log a message to the console when the function is called
+    document.getElementById("editProfileForm").style.display = "block";
+    document.getElementById("editProfileBtn").style.display = "none";
+}
+
+function updateProfile() {
+    const username = document.getElementById("Username").value;
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const address = document.getElementById("address").value;
+    const password = document.getElementById("password").value;
+    const sessionID = document.getElementById("sessionID").value;
+    const picture = document.getElementById("picture").value;
+
+    const updatedUser = {
+        Username: username,
+        Name: name,
+        Email: email,
+        Phone: phone,
+        Address: address,
+        Password: password,
+        SessionID: sessionID,
+        Picture: picture
+    };
+
+    const apiUrl = `http://localhost:5181/api/Users/${username}`; // Replace with the actual URL of your WebAPI
+
+    const headers = {
+        "Content-Type": "application/json",
+    };
+
+    const requestOptions = {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(updatedUser),
+    };
+
+    fetch(apiUrl, requestOptions)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            // Check if there is any JSON to parse
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return response.json();
+            } else {
+                // No JSON to parse, return a default value or empty object
+                return {};
+            }
+        })
+        .then((data) => {
+            
+            console.log("Profile updated successfully:", data);
+            alert("Profile updated successfully!"); // Notify user
+            loadView('account'); // Reload account view
+        })
+        .catch((error) => {
+            // Handle any errors that occurred during the fetch
+            console.error("Fetch error:", error);
+            alert("Failed to update profile: " + error.message); // Notify user
+        });
+}
+
+
 
 document.addEventListener("DOMContentLoaded", displayLogout);
 // document.addEventListener("DOMContentLoaded", loadView);
