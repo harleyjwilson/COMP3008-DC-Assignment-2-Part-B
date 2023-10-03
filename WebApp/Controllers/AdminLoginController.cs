@@ -22,7 +22,7 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                if (verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                if (verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     return PartialView("AdminLoginAuthenticatedView");
                 }
@@ -37,7 +37,7 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                if (verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                if (verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     return PartialView("AdminLoginAuthenticatedView");
                 }
@@ -90,7 +90,7 @@ namespace WebApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public static bool verifySessionID(string? username, string? sessionID)
+        public static bool verifyAdminSessionID(string? username, string? sessionID)
         {
             Console.WriteLine("verifySessionID Username: " + username);
             Console.WriteLine("verifySessionID SessionID: " + sessionID);

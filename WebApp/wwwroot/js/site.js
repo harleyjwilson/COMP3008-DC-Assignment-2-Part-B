@@ -4,13 +4,15 @@
 // Write your JavaScript code.
 
 function loadView(status) {
-  var apiUrl = "/api/login/defaultview";
+  var apiUrl = "";
+  if (status === "login") apiUrl = "/api/login/defaultview";
   if (status === "authview") apiUrl = "/api/login/authview";
   if (status === "error") apiUrl = "/api/login/error";
   if (status === "adminlogin") apiUrl = "/api/adminlogin/defaultview";
   if (status === "adminauthview") apiUrl = "/api/adminlogin/authview";
   if (status === "adminerror") apiUrl = "/api/adminlogin/error";
   if (status === "account") apiUrl = "/api/account/view";
+  if (status === "admin") apiUrl = "/api/admin/view";
   if (status === "logout") apiUrl = "/api/logout";
 
   console.log("Hello " + apiUrl);

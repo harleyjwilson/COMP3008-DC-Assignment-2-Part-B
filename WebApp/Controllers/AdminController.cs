@@ -14,7 +14,7 @@ namespace WebApp.Controllers
             {
                 var cookieValue = Request.Cookies["SessionID"];
                 // if (cookieValue == "1234567")
-                if (LoginController.verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
@@ -22,12 +22,12 @@ namespace WebApp.Controllers
                     task.Wait();
                     var admin = task.Result;
                     ViewData["Admin"] = admin;
-                    return PartialView("AccountViewAuthenticated");
+                    return PartialView("AdminViewAuthenticated");
                 }
 
             }
             // Return the partial view as HTML
-            return PartialView("AccountViewDefault");
+            return PartialView("AdminViewDefault");
         }
     }
 }
