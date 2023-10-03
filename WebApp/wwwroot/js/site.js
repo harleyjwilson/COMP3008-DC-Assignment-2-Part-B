@@ -123,6 +123,19 @@ function performAdminAuth() {
         });
 }
 
+function updateAdminContact() {
+   var phone = document.getElementById("AdminPhone").value;
+   var email = document.getElementById("AdminEmail").value;
+   var data = {
+     Phone: phone,
+     Email: email,
+   };
+}
+
+function updateAdminPassword() { 
+
+}
+
 function hasSessionID() {
   const cookies = document.cookie.split(";");
   let result = false
