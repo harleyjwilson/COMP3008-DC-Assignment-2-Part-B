@@ -129,7 +129,42 @@ function updateAdminContact() {
    var data = {
      Phone: phone,
      Email: email,
+  };
+   console.error(data);
+   const apiUrl = "/api/admin/contact";
+
+   const headers = {
+     "Content-Type": "application/json", // Specify the content type as JSON if you're sending JSON data
+     // Add any other headers you need here
    };
+
+   const requestOptions = {
+     method: "POST",
+     headers: headers,
+     body: JSON.stringify(data), // Convert the data object to a JSON string
+   };
+
+   fetch(apiUrl, requestOptions)
+     .then((response) => {
+       if (!response.ok) {
+         throw new Error("Network response was not ok");
+       }
+       return response.json();
+     })
+     .then((data) => {
+       // Handle the data from the API
+       const jsonObject = data;
+       if (jsonObject.login) {
+         loadView("admin");
+         displayLogout();
+       } else {
+         loadView("admin");
+       }
+     })
+     .catch((error) => {
+       // Handle any errors that occurred during the fetch
+       console.error("Fetch error:", error);
+     });
 }
 
 function updateAdminPassword() { 

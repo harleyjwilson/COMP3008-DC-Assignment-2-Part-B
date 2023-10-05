@@ -31,7 +31,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("contact")]
-        public IActionResult UpdateAdminContact()
+        public IActionResult UpdateAdminContact([FromBody] Admin adminUpdate)
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
@@ -41,9 +41,20 @@ namespace WebApp.Controllers
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/admins/" + Request.Cookies["Username"]);
+                    var task = client.GetFromJsonAsync<Admin>("api/admins/" + Request.Cookies["Username"]);
                     task.Wait();
                     var admin = task.Result;
+
+                    if (adminUpdate.Phone != null)
+                    {
+                        admin.Phone = adminUpdate.Phone;
+                    }
+                    if (adminUpdate.Email != null)
+                    {
+                        admin.Email = adminUpdate.Email;
+                    }
+                    var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
+                    updateTask.Wait();
                     ViewData["Admin"] = admin;
                     return PartialView("AdminViewAuthenticated");
                 }
