@@ -28,7 +28,7 @@ namespace LocalDBWebApiUsingEF.Data
                     Address = "Bently",
                     Phone = "111-111-1111",
                     Password = "mypassword1",
-                    Picture = "/resources/images/man1.jpeg"
+                    Picture = "/resources/images/man1.jpg"
                 },
                 new User("mistry")
                 {
@@ -37,7 +37,7 @@ namespace LocalDBWebApiUsingEF.Data
                     Address = "Victoria Park",
                     Phone = "222-222-2222",
                     Password = "mypassword",
-                    Picture = "/resources/images/man2.jpeg"
+                    Picture = "/resources/images/man1.jpg"
                 },
                 new User("mike")
                 {
@@ -46,8 +46,8 @@ namespace LocalDBWebApiUsingEF.Data
                     Address = "Northbridge",
                     Phone = "333-333-3333",
                     Password = "mypassword3",
-                    Picture = "/resources/images/women1.jpeg",
-                    SessionID = "3Jxh7KlN8ZbA2GfWYs9RmP1oXsDlTz6Q"
+                    Picture = "/resources/images/man1.jpg",
+                    
                 }
             };
             modelBuilder.Entity<User>().HasData(users);
@@ -62,7 +62,7 @@ namespace LocalDBWebApiUsingEF.Data
                     Address = "Sydney",
                     Phone = "000-000-0000",
                     Password = "adminpassword",
-                    Picture = "/resources/images/man1.jpeg"
+                    Picture = "/resources/images/man1.jpg"
                 }
             };
             modelBuilder.Entity<Admin>().HasData(admin);

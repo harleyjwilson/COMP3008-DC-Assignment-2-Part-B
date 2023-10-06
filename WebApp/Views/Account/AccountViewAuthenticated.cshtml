@@ -1,9 +1,55 @@
 ﻿@* @model WebApp.Models.User *@
 
 @{
-    ViewData["Title"] = "Account";
+    var user = (User)ViewData["Users"];
+    var imageUrl = "http://localhost:5181" + user.Picture;
 }
-<p id="status">
-    Welcome, <span id="accountSpanUsername">@(((User)ViewData["Users"]).Name)</span>!
 
-</p>
+<div id="userProfile">
+    <h2>Welcome, @user.Name!</h2>
+    <img src="@imageUrl" alt="User Picture" style="width:150px; height:auto;" />
+    <p>Email: @user.Email</p>
+    <p>Phone: @user.Phone</p>
+    <p>Address: @user.Address</p>
+    <p>Password: @user.Password</p>
+    <!-- Add other user details as required -->
+
+    <!-- Edit Profile Button -->
+    <button id="editProfileBtn" onclick="showEditForm()">Edit Profile</button>
+</div>
+
+
+<!-- Edit Profile Form (initially hidden) -->
+<div id="editProfileForm" style="display:none;">
+    <h2>Edit Profile</h2>
+    <label for="Username">Username:</label>
+        <input type="text" id="Username" name="Username" value="@user.Username" required readonly />
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="Name" value="@user.Name" required />
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="Email" value="@user.Email" required />
+        
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="Phone" value="@user.Phone" required />
+    
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="Address" value="@user.Address" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="Password" value="@user.Password" required />
+
+        
+        <input type="hidden" id="sessionID" name="SessionID" value="@user.SessionID" required readonly />
+        
+
+        <label for="picture">Picture URL:</label>
+        <input type="text" id="picture" name="Picture" value="@user.Picture" required />
+
+
+        <button id="updateProfileBtn" onclick="updateProfile()">Update Profile</button>
+        
+    
+</div>
+
