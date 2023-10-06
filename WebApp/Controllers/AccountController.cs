@@ -8,27 +8,28 @@ namespace WebApp.Controllers
     public class AccountController : Controller
     {
         [HttpGet("view")]
-        public IActionResult GetViewAsync()
+        public async Task<IActionResult> GetViewAsync()
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
                 var cookieValue = Request.Cookies["SessionID"];
-                // if (cookieValue == "1234567")
-                if (LoginController.verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                var username = Request.Cookies["Username"];
+                if (LoginController.verifySessionID(username, cookieValue))
                 {
-                    var client = new HttpClient();
-                    client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/users/" + Request.Cookies["Username"]);
-                    task.Wait();
-                    var user = task.Result;
+                    var client = new HttpClient
+                    {
+                        BaseAddress = new Uri("http://localhost:5181/")
+                    };
+                    var user = await client.GetFromJsonAsync<User>("api/users/" + Request.Cookies["Username"]);
                     ViewData["Users"] = user;
                     return PartialView("AccountViewAuthenticated");
                 }
-
             }
-            // Return the partial view as HTML
             return PartialView("AccountViewDefault");
         }
+
+        
+
     }
 }
 
