@@ -304,7 +304,60 @@ function updateProfile() {
         });
 }
 
+function showTransferForm() {
+    document.getElementById('transferMoneyForm').style.display = 'block';
+}
+
+function transferMoney() {
+    var fromAccount = document.getElementById('fromAccount').value;
+    var toAccount = document.getElementById('toAccount').value;
+    var amount = document.getElementById('amount').value;
+
+    // Validate input values on client side (Optional but recommended)
+    if (!fromAccount || !toAccount || !amount) {
+        alert('All fields are required!');
+        return;
+    }
+    if (isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid amount!');
+        return;
+    }
+
+    // Send a POST request to your API
+    fetch('http://localhost:5181/api/bankaccounts/transfer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            FromAccountNumber: fromAccount,
+            ToAccountNumber: toAccount,
+            Amount: amount
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle response from server
+            alert('Money transferred successfully!');
+            // Optionally: Update UI, show a success message, etc.
+        })
+        .catch((error) => {
+            // Handle error, show an error message, etc.
+            console.error('Error:', error);
+            alert('Error: ' + error.message);
+        });
+}
+
 
 
 document.addEventListener("DOMContentLoaded", displayLogout);
 // document.addEventListener("DOMContentLoaded", loadView);
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('showTransferBtn').addEventListener('click', showTransferForm);
+    document.getElementById('performTransferBtn').addEventListener('click', transferMoney);
+});
