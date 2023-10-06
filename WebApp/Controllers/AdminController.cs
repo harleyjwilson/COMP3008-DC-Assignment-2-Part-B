@@ -30,7 +30,7 @@ namespace WebApp.Controllers
             return PartialView("AdminViewDefault");
         }
 
-        [HttpGet("contact")]
+        [HttpPost("contact")]
         public IActionResult UpdateAdminContact([FromBody] Admin adminUpdate)
         {
             if (Request.Cookies.ContainsKey("SessionID"))
@@ -45,11 +45,11 @@ namespace WebApp.Controllers
                     task.Wait();
                     var admin = task.Result;
 
-                    if (adminUpdate.Phone != null)
+                    if (adminUpdate.Phone != null || adminUpdate.Phone != "")
                     {
                         admin.Phone = adminUpdate.Phone;
                     }
-                    if (adminUpdate.Email != null)
+                    if (adminUpdate.Email != null || adminUpdate.Phone != "")
                     {
                         admin.Email = adminUpdate.Email;
                     }
@@ -62,6 +62,34 @@ namespace WebApp.Controllers
             // Return the partial view as HTML
             return PartialView("AdminViewDefault");
         }
+
+        [HttpPost("password")]
+        public IActionResult UpdateAdminPassword([FromBody] Admin adminUpdate)
+        {
+            if (Request.Cookies.ContainsKey("SessionID"))
+            {
+                var cookieValue = Request.Cookies["SessionID"];
+                // if (cookieValue == "1234567")
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                {
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri("http://localhost:5181/");
+                    var task = client.GetFromJsonAsync<Admin>("api/admins/" + Request.Cookies["Username"]);
+                    task.Wait();
+                    var admin = task.Result;
+
+                    if (adminUpdate.Password != null)
+                    {
+                        admin.Password = adminUpdate.Password;
+                    }
+                    var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
+                    updateTask.Wait();
+                    ViewData["Admin"] = admin;
+                    return PartialView("AdminViewAuthenticated");
+                }
+            }
+            // Return the partial view as HTML
+            return PartialView("AdminViewDefault");
+        }
     }
 }
-
