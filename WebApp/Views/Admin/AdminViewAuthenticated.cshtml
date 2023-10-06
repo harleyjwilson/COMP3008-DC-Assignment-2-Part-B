@@ -3,7 +3,27 @@
 @{
     ViewData["Title"] = "Admin";
 }
-<p id="status">
+<h1 id="status">
     Welcome, <span id="accountSpanUsername">@(((User)ViewData["Admin"]).Name)</span>!
 
-</p>
+</h1>
+<h2>Account Details</h2>
+@* <img src="@(((User)ViewData["Admin"]).Picture)" alt="Profile Image" /> *@
+<p>Username: @(((User)ViewData["Admin"]).Username)</p>
+<p>Name: @(((User)ViewData["Admin"]).Name)</p>
+<p>Email Address: @(((User)ViewData["Admin"]).Email)</p>
+<p>Phone: @(((User)ViewData["Admin"]).Phone)</p>
+
+<h2>Update Account Settings</h2>
+<form>
+    <input type="text" name="Phone" id="AdminPhone" placeholder="Phone Number">
+    <input type="text" name="Email" id="AdminEmail" placeholder="Email Address">
+    <button type="button" id="SubmitButton" onclick="updateAdminContact()">Update Contact Details</button>
+</form>
+
+<h2>Update Password</h2>
+<form>
+    <input type="password" name="Password1" id="AdminPassword1" placeholder="Enter Password">
+    <input type="password" name="Password2" id="AdminPassword2" placeholder="Re-enter Password">
+    <button type="button" id="SubmitButton" onclick="updateAdminPassword()">Update Password</button>
+</form>
