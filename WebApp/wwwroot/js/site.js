@@ -312,6 +312,7 @@ function transferMoney() {
     var fromAccount = document.getElementById('fromAccount').value;
     var toAccount = document.getElementById('toAccount').value;
     var amount = document.getElementById('amount').value;
+    var description = document.getElementById('description').value;
 
     // Validate input values on client side (Optional but recommended)
     if (!fromAccount || !toAccount || !amount) {
@@ -332,7 +333,8 @@ function transferMoney() {
         body: JSON.stringify({
             FromAccountNumber: fromAccount,
             ToAccountNumber: toAccount,
-            Amount: amount
+            Amount: amount,
+            Description: description
         })
     })
         .then(response => {
@@ -385,7 +387,7 @@ function displayTransactions(transactions) {
 
     let headerRow = document.createElement("tr");
 
-    ["Amount", "From Account", "To Account", "Timestamp"].forEach(headerText => {
+    ["Amount", "From Account", "To Account", "Description", "Timestamp"].forEach(headerText => {
         let header = document.createElement("th");
         header.textContent = headerText;
         headerRow.appendChild(header);
@@ -409,7 +411,7 @@ function displayTransactions(transactions) {
 
     transactions.forEach(transaction => {
         let row = document.createElement("tr");
-        [transaction.amount, transaction.fromAccountNumber, transaction.toAccountNumber, transaction.timestamp].forEach(text => {
+        [transaction.amount, transaction.fromAccountNumber, transaction.toAccountNumber, transaction.description, transaction.timestamp].forEach(text => {
             let cell = document.createElement("td");
             cell.textContent = text;
             row.appendChild(cell);

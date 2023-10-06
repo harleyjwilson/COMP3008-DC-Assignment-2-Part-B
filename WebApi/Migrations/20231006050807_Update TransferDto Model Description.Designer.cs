@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DBManager))]
-    [Migration("20231006031447_Transaction Model")]
-    partial class TransactionModel
+    [Migration("20231006050807_Update TransferDto Model Description")]
+    partial class UpdateTransferDtoModelDescription
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,10 @@ namespace WebApi.Migrations
 
                     b.Property<int?>("BankAccountAccountNumber")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("FromAccountNumber")
                         .HasColumnType("INTEGER");

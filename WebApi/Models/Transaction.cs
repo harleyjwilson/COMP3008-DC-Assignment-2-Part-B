@@ -22,6 +22,7 @@ namespace LocalDBWebApiUsingEF.Models
         // Foreign Key to User
         [JsonIgnore]
         public virtual BankAccount? BankAccount { get; set; }
+        public string Description { get; internal set; }
     }
 
 }

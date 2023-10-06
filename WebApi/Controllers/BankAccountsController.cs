@@ -144,6 +144,7 @@ namespace LocalDBWebApiUsingEF.Controllers
                 FromAccountNumber = transfer.FromAccountNumber,
                 ToAccountNumber = transfer.ToAccountNumber,
                 Amount = (double)transfer.Amount,
+                Description = transfer.Description,
                 Timestamp = DateTime.UtcNow // Using UtcNow to avoid timezone issues
             };
             _context.Transactions.Add(transaction);

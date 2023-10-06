@@ -118,6 +118,10 @@ namespace WebApi.Migrations
                     b.Property<int?>("BankAccountAccountNumber")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("FromAccountNumber")
                         .HasColumnType("INTEGER");
 
