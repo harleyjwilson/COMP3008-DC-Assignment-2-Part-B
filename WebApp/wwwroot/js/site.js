@@ -353,6 +353,71 @@ function transferMoney() {
         });
 }
 
+function fetchAndDisplayTransactions() {
+    var selectedAccountNumber = document.getElementById("accountSelector").value;
+
+    fetch(`http://localhost:5181/api/BankAccounts/${selectedAccountNumber}/transactions`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(transactions => {
+            // Display transactions to user
+            let transactionHistoryDiv = document.getElementById("transactionHistory");
+            transactionHistoryDiv.innerHTML = ""; // Clear any existing transaction history
+
+            
+
+            let table = document.createElement("table");
+            table.setAttribute("id", "transactionTable");
+            table.setAttribute("class", "transaction-table");
+
+            let headerRow = document.createElement("tr");
+
+            ["Amount", "From Account", "To Account", "Timestamp"].forEach(headerText => {
+                let header = document.createElement("th");
+                header.textContent = headerText;
+                header.addEventListener("click", function() {
+                    sortTable(transactions, headerText.toLowerCase().replace(" ", ""));
+                    fetchAndDisplayTransactions();
+                });
+                headerRow.appendChild(header);
+            });
+
+            table.appendChild(headerRow);
+
+            transactions.forEach(transaction => {
+                let row = document.createElement("tr");
+                [transaction.amount, transaction.fromAccountNumber, transaction.toAccountNumber, transaction.timestamp].forEach(text => {
+                    let cell = document.createElement("td");
+                    cell.textContent = text;
+                    row.appendChild(cell);
+                });
+                table.appendChild(row);
+            });
+
+            transactionHistoryDiv.appendChild(table);
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            document.getElementById("message").innerText = `Failed to fetch transaction history: ${error.message}`;
+        });
+}
+
+// Sorting function
+function sortTable(data, column) {
+    data.sort((a, b) => {
+        if (a[column] < b[column]) {
+            return -1;
+        }
+        if (a[column] > b[column]) {
+            return 1;
+        }
+        return 0;
+    });
+}
 
 
 document.addEventListener("DOMContentLoaded", displayLogout);

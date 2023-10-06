@@ -87,12 +87,7 @@ namespace LocalDBWebApiUsingEF.Data
                 }
             };
 
-            // Transaction Seed Data
-            List<Transaction> transactions = new List<Transaction>
-            {
-                new Transaction(10001, 200.20),
-                new Transaction(10002, 694.70)
-            };
+           
 
             // Set Username as the primary key for User
             modelBuilder.Entity<User>()

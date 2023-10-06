@@ -25,8 +25,23 @@
     <!-- Edit Profile Button -->
     <button id="editProfileBtn" onclick="showEditForm()">Edit Profile</button>
     <button id="showTransferBtn" onclick="showTransferForm()">Transfer Money  </button>>
+      
 </div>
+<!-- Transaction History Section -->
+<div id="transactionHistory">
+    <h3>Transaction History</h3>
 
+    <label for="accountSelector">Select Account:</label>
+    <select id="accountSelector" name="accountSelector">
+        @foreach (var account in user.BankAccounts)
+        {
+            <option value="@account.AccountNumber">@account.AccountNumber</option>
+        }
+    </select>
+
+    <button onclick="fetchAndDisplayTransactions()">View Transaction History</button>
+    
+</div>
 <!-- Transfer Money Form -->
 <div id="transferMoneyForm" style="display:none;">
     <h2>Transfer Money</h2>

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class initialsetting : Migration
+    public partial class TransactionModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,8 +76,10 @@ namespace WebApi.Migrations
                 {
                     TransactionId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    FromAccountNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    ToAccountNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     Amount = table.Column<double>(type: "REAL", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     BankAccountAccountNumber = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>

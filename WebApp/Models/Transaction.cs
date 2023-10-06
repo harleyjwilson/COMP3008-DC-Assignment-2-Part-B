@@ -6,18 +6,22 @@ namespace WebApp.Models
 {
     public class Transaction
     {
-        public Transaction(int AccountNumber, double Amount)
-        {
-            this.AccountNumber = AccountNumber;
-            this.Amount = Amount;
-        }
-
         public int TransactionId { get; set; }
-        public int AccountNumber { get; set; }
-        public double Amount { get; set; }
-        // Foreign Key to User
 
+        [Required]
+        public int FromAccountNumber { get; set; }
+
+        [Required]
+        public int ToAccountNumber { get; set; }
+
+        [Required]
+        public double Amount { get; set; }
+
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+        // Foreign Key to User
         [JsonIgnore]
         public virtual BankAccount? BankAccount { get; set; }
     }
+
 }
