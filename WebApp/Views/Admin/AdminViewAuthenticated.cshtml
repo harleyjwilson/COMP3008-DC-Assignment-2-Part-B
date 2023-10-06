@@ -1,0 +1,9 @@
+﻿@* @model WebApp.Models.User *@
+
+@{
+    ViewData["Title"] = "Admin";
+}
+<p id="status">
+    Welcome, <span id="accountSpanUsername">@(((User)ViewData["Admin"]).Name)</span>!
+
+</p>
