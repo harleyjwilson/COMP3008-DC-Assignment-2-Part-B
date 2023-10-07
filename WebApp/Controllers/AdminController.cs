@@ -160,5 +160,23 @@ namespace WebApp.Controllers
             }
             return Json(response);
         }
+
+        [HttpDelete("users/delete/{username}")]
+        public IActionResult AdminDeleteUser([FromRoute] string username)
+        {
+            var response = new { success = false };
+            if (Request.Cookies.ContainsKey("SessionID"))
+            {
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                {
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri("http://localhost:5181/");
+                    var task = client.DeleteAsync("api/users/" + username);
+                    task.Wait();
+                    response = new { success = true };
+                }
+            }
+            return Json(response);
+        }
     }
 }
