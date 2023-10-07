@@ -272,6 +272,57 @@ function adminCreateUser() {
    });
 }
 
+function adminEditUser() {
+  var username = document.getElementById("EditUsername").value;
+  var name = document.getElementById("EditName").value;
+  var email = document.getElementById("EditEmail").value;
+  var address = document.getElementById("EditAddress").value;
+  var phone = document.getElementById("EditPhone").value;
+  var picture = null;
+  var data = {
+   Username: username,
+   Name: name === "" ? null : name,
+   Email: email === "" ? null : email,
+   Address: address === "" ? null : address,
+   Phone: phone === "" ? null : phone,
+   Picture: picture === "" ? null : picture,
+ };
+  console.error(data);
+  const apiUrl = "/api/admin/users/edit";
+
+  const headers = {
+    "Content-Type": "application/json", // Specify the content type as JSON if you're sending JSON data
+    // Add any other headers you need here
+  };
+
+  const requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(data), // Convert the data object to a JSON string
+  };
+
+  fetch(apiUrl, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Handle the data from the API
+      if (data.success) {
+        console.log("User edited.");
+      } else {
+        console.log("Error in editing user.");
+      }
+      loadView("adminusers");
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch
+      console.error("Fetch error:", error);
+    });
+}
+
 function hasSessionID() {
   const cookies = document.cookie.split(";");
   let result = false
@@ -284,7 +335,6 @@ function hasSessionID() {
 }
 
 function displayLogout() {
-  console.log("Have SessionID: " + hasSessionID());
       if (hasSessionID()) {
         document.getElementById("LogoutButton").style.display = "block";
         document.getElementById("LoginButton").style.display = "none";

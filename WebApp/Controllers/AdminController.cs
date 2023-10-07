@@ -129,5 +129,36 @@ namespace WebApp.Controllers
             }
             return Json(response);
         }
+
+        [HttpPost("users/edit")]
+        public IActionResult AdminEditUser([FromBody] User editUser)
+        {
+            var response = new { success = false };
+            if (Request.Cookies.ContainsKey("SessionID"))
+            {
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                {
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri("http://localhost:5181/");
+                    var task = client.GetFromJsonAsync<User>("api/users/" + editUser.Username);
+                    task.Wait();
+                    var verifyUser = task.Result;
+                    if (verifyUser != null)
+                    {
+                        verifyUser.Name = verifyUser.Name == editUser.Name ? verifyUser.Name : editUser.Name;
+                        verifyUser.Email = verifyUser.Email == editUser.Email ? verifyUser.Email : editUser.Email; ;
+                        verifyUser.Address = verifyUser.Address == editUser.Address ? verifyUser.Address : editUser.Address; ;
+                        verifyUser.Phone = verifyUser.Phone == editUser.Phone ? verifyUser.Phone : editUser.Phone; ;
+                        verifyUser.Picture = verifyUser.Picture == editUser.Picture ? verifyUser.Picture : editUser.Picture; ;
+
+                        var updateTask = client.PutAsJsonAsync<User>("api/users/" + verifyUser.Username, verifyUser);
+                        updateTask.Wait();
+                        var result = updateTask.Result;
+                        response = new { success = true };
+                    }
+                }
+            }
+            return Json(response);
+        }
     }
 }
