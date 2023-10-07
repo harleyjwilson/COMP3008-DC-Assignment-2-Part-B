@@ -407,6 +407,44 @@ function adminResetPassword() {
     });
 }
 
+function adminViewUser(searchType) {
+  var searchTerm =
+    searchType === "username"
+      ? document.getElementById("ViewUsername").value
+      : document.getElementById("ViewEmailAddress").value;
+
+  var data = {
+    SearchTerm: searchTerm,
+  };
+
+  console.error(data);
+  const apiUrl = "/api/admin/users/view";
+
+  const headers = {
+    "Content-Type": "application/json", // Specify the content type as JSON if you're sending JSON data
+    // Add any other headers you need here
+  };
+
+  const requestOptions = {
+    method: "GET",
+    headers: headers,
+  };
+
+  fetch(apiUrl + "/" + data.SearchTerm, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.text();
+    })
+    .then((data) => {
+      document.getElementById("main").innerHTML = data;
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+    });
+}
+
 function hasSessionID() {
   const cookies = document.cookie.split(";");
   let result = false
