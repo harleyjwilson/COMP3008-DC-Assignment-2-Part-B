@@ -364,6 +364,49 @@ function adminDeleteUser() {
     });
 }
 
+function adminResetPassword() {
+  var username = document.getElementById("ResetUsername").value;
+  var password = document.getElementById("ResetPassword").value;
+  var data = {
+    Username: username,
+    Password: password,
+  };
+  console.error(data);
+  const apiUrl = "/api/admin/users/resetpassword";
+
+  const headers = {
+    "Content-Type": "application/json", // Specify the content type as JSON if you're sending JSON data
+    // Add any other headers you need here
+  };
+
+  const requestOptions = {
+    method: "PUT",
+    headers: headers,
+    body: JSON.stringify(data), // Convert the data object to a JSON string
+  };
+
+  fetch(apiUrl + "/" + data.Username, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Handle the data from the API
+      if (data.success) {
+        console.log("User password updated.");
+      } else {
+        console.log("Error in updating user password.");
+      }
+      loadView("adminusers");
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch
+      console.error("Fetch error:", error);
+    });
+}
+
 function hasSessionID() {
   const cookies = document.cookie.split(";");
   let result = false
