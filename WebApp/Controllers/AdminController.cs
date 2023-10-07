@@ -15,7 +15,7 @@ namespace WebApp.Controllers
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/admins/" + Request.Cookies["Username"]);
+                    var task = client.GetFromJsonAsync<Admin>("api/admins/" + Request.Cookies["Username"]);
                     task.Wait();
                     var admin = task.Result;
                     ViewData["Admin"] = admin;
