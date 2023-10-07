@@ -268,8 +268,10 @@ function adminCreateUser() {
     .then((data) => {
       if (data.success) {
         console.log("New user created.");
+        alert("New user created.")
       } else {
-        console.log("Error creating new user");
+        console.log("Error creating new user.");
+        alert("Error creating new user.");
       }
       loadView("adminusers");
     })
@@ -315,8 +317,10 @@ function adminEditUser() {
     .then((data) => {
       if (data.success) {
         console.log("User edited.");
+        alert("User edited.")
       } else {
         console.log("Error in editing user.");
+        alert("Error in editing user.");
       }
       loadView("adminusers");
     })
@@ -352,8 +356,10 @@ function adminDeleteUser() {
     .then((data) => {
       if (data.success) {
         console.log("User deleted.");
+        alert("User deleted.");
       } else {
         console.log("Error in deleting user.");
+        alert("Error in deleting user.");
       }
       loadView("adminusers");
     })
@@ -391,8 +397,10 @@ function adminResetPassword() {
     .then((data) => {
       if (data.success) {
         console.log("User password updated.");
+        alert("User password updated.");
       } else {
         console.log("Error in updating user password.");
+        alert("Error in updating user password.");
       }
       loadView("adminusers");
     })
