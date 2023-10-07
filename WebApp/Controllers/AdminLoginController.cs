@@ -69,8 +69,6 @@ namespace WebApp.Controllers
                     verifyUser.SessionID = sessionID;
                     Response.Cookies.Append("Username", admin.Username);
                     Response.Cookies.Append("SessionID", sessionID);
-                    Console.WriteLine("Login Update: " + verifyUser.Username);
-                    Console.WriteLine("Login Update: " + verifyUser.SessionID);
                     var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, verifyUser);
                     updateTask.Wait();
                     response = new { login = true };
@@ -87,8 +85,6 @@ namespace WebApp.Controllers
 
         public static bool verifyAdminSessionID(string? username, string? sessionID)
         {
-            Console.WriteLine("verifySessionID Username: " + username);
-            Console.WriteLine("verifySessionID SessionID: " + sessionID);
             if (username == null || sessionID == null)
             {
                 return false;
