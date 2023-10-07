@@ -2,10 +2,24 @@
 {
     public class User
     {
+
         public User(string? Username)
         {
             this.Username = Username!;
         }
+
+        // public User(User user)
+        // {
+        //     this.Username = user.Username;
+        //     this.Name = user.Name;
+        //     this.Email = user.Email;
+        //     this.Address = user.Address;
+        //     this.Phone = user.Phone;
+        //     this.Picture = user.Picture;
+        //     this.Password = user.Password;
+        //     this.SessionID = user.SessionID;
+        //     this.BankAccounts = user.BankAccounts;
+        // }
 
         public string Username { get; set; }
         public string? Name { get; set; }

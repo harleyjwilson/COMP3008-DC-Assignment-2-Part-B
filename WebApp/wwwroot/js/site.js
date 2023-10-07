@@ -13,6 +13,8 @@ function loadView(status) {
   if (status === "adminerror") apiUrl = "/api/adminlogin/error";
   if (status === "account") apiUrl = "/api/account/view";
   if (status === "admin") apiUrl = "/api/admin/view";
+  if (status === "adminusers") apiUrl = "/api/admin/users";
+  // if (status === "admintransactions") apiUrl = "/api/admin/transactions";
   if (status === "logout") apiUrl = "/api/logout";
 
   console.log("Hello " + apiUrl);
@@ -125,7 +127,7 @@ function performAdminAuth() {
 }
 
 function updateAdminContact() {
-   var phone = document.getElementById("AdminPhone").value;
+  var phone = document.getElementById("AdminPhone").value;
   var email = document.getElementById("AdminEmail").value;
   
    var data = {
@@ -214,6 +216,60 @@ function updateAdminPassword() {
       // Handle any errors that occurred during the fetch
       console.error("Fetch error:", error);
     });
+}
+
+function adminCreateUser() {
+ var username = document.getElementById("CreateUsername").value;
+ var name = document.getElementById("CreateName").value;
+ var email = document.getElementById("CreateEmail").value;
+ var address = document.getElementById("CreateAddress").value;
+ var phone = document.getElementById("CreatePhone").value;
+ var password = document.getElementById("CreatePassword").value;
+
+ var data = {
+   Username: username,
+   Name: name === "" ? null : name,
+   Email: email === "" ? null : email,
+   Address: address === "" ? null : address,
+   Phone: phone === "" ? null : phone,
+   Picture: null,
+   Password: password === "" ? null : password,
+ };
+ console.error(data);
+ const apiUrl = "/api/admin/users/create";
+
+ const headers = {
+   "Content-Type": "application/json", // Specify the content type as JSON if you're sending JSON data
+   // Add any other headers you need here
+ };
+
+ const requestOptions = {
+   method: "POST",
+   headers: headers,
+   body: JSON.stringify(data), // Convert the data object to a JSON string
+ };
+
+ fetch(apiUrl, requestOptions)
+   .then((response) => {
+     if (!response.ok) {
+       throw new Error("Network response was not ok");
+     }
+     return response.json();
+   })
+   .then((data) => {
+     // Handle the data from the API
+     //  const jsonObject = data;
+     if (data.success) {
+       console.log('New user created.');
+     } else {
+       console.log('Error creating new user');
+     }
+     loadView("adminusers");
+   })
+   .catch((error) => {
+     // Handle any errors that occurred during the fetch
+     console.error("Fetch error:", error);
+   });
 }
 
 function hasSessionID() {

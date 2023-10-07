@@ -2,7 +2,6 @@
 {
     public class User
     {
-
         public User(string? Username)
         {
             this.Username = Username!;

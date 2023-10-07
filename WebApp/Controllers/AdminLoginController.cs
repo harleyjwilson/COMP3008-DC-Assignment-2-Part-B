@@ -79,11 +79,6 @@ namespace WebApp.Controllers
             return Json(response);
         }
 
-        // public IActionResult Index()
-        // {
-        //     return View();
-        // }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -104,8 +99,6 @@ namespace WebApp.Controllers
                 var task = client.GetFromJsonAsync<Admin>("api/admins/" + username);
                 task.Wait();
                 var verifyUser = task.Result;
-                Console.WriteLine("VerifyUser: " + verifyUser.Username);
-                Console.WriteLine("VerifyUser: " + verifyUser.SessionID);
                 if (verifyUser != null && verifyUser.SessionID == sessionID)
                 {
                     return true;

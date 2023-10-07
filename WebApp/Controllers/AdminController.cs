@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -12,8 +11,6 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                var cookieValue = Request.Cookies["SessionID"];
-                // if (cookieValue == "1234567")
                 if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     var client = new HttpClient();
@@ -26,7 +23,6 @@ namespace WebApp.Controllers
                 }
 
             }
-            // Return the partial view as HTML
             return PartialView("AdminViewDefault");
         }
 
@@ -35,8 +31,6 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                var cookieValue = Request.Cookies["SessionID"];
-                // if (cookieValue == "1234567")
                 if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     var client = new HttpClient();
@@ -45,21 +39,23 @@ namespace WebApp.Controllers
                     task.Wait();
                     var admin = task.Result;
 
-                    if (adminUpdate.Phone != null || adminUpdate.Phone != "")
+                    if (admin != null)
                     {
-                        admin.Phone = adminUpdate.Phone;
+                        if (adminUpdate.Phone != null && adminUpdate.Phone != "")
+                        {
+                            admin.Phone = adminUpdate.Phone;
+                        }
+                        if (adminUpdate.Email != null && adminUpdate.Phone != "")
+                        {
+                            admin.Email = adminUpdate.Email;
+                        }
+                        var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
+                        updateTask.Wait();
+                        ViewData["Admin"] = admin;
                     }
-                    if (adminUpdate.Email != null || adminUpdate.Phone != "")
-                    {
-                        admin.Email = adminUpdate.Email;
-                    }
-                    var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
-                    updateTask.Wait();
-                    ViewData["Admin"] = admin;
                     return PartialView("AdminViewAuthenticated");
                 }
             }
-            // Return the partial view as HTML
             return PartialView("AdminViewDefault");
         }
 
@@ -68,8 +64,6 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                var cookieValue = Request.Cookies["SessionID"];
-                // if (cookieValue == "1234567")
                 if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     var client = new HttpClient();
@@ -78,18 +72,62 @@ namespace WebApp.Controllers
                     task.Wait();
                     var admin = task.Result;
 
-                    if (adminUpdate.Password != null)
+                    if (admin != null)
                     {
-                        admin.Password = adminUpdate.Password;
+                        if (adminUpdate.Password != null)
+                        {
+                            admin.Password = adminUpdate.Password;
+                        }
+                        var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
+                        updateTask.Wait();
+                        ViewData["Admin"] = admin;
                     }
-                    var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
-                    updateTask.Wait();
-                    ViewData["Admin"] = admin;
                     return PartialView("AdminViewAuthenticated");
                 }
             }
-            // Return the partial view as HTML
             return PartialView("AdminViewDefault");
+        }
+
+        [HttpGet("users")]
+        public IActionResult GetAdminUsersView()
+        {
+            if (Request.Cookies.ContainsKey("SessionID"))
+            {
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                {
+                    return PartialView("Users/AdminUsersViewAuthenticated");
+                }
+            }
+            return PartialView("Users/AdminUsersViewDefault");
+        }
+
+        [HttpPost("users/create")]
+        public IActionResult AdminCreateUser([FromBody] User newUser)
+        {
+            var response = new { success = false };
+            if (Request.Cookies.ContainsKey("SessionID"))
+            {
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                {
+                    User user = new User(newUser.Username)
+                    {
+                        Name = newUser.Name,
+                        Email = newUser.Email,
+                        Address = newUser.Address,
+                        Phone = newUser.Phone,
+                        Picture = newUser.Picture,
+                        Password = newUser.Password
+                    };
+
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri("http://localhost:5181/");
+                    var task = client.PostAsJsonAsync<User>("api/users/", user);
+                    task.Wait();
+                    var result = task.Result;
+                    response = new { success = true };
+                }
+            }
+            return Json(response);
         }
     }
 }
