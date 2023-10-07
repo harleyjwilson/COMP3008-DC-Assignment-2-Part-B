@@ -368,6 +368,7 @@ function transferMoney() {
     var fromAccount = document.getElementById('fromAccount').value;
     var toAccount = document.getElementById('toAccount').value;
     var amount = document.getElementById('amount').value;
+    var description = document.getElementById('description').value;
 
     // Validate input values on client side (Optional but recommended)
     if (!fromAccount || !toAccount || !amount) {
@@ -388,7 +389,8 @@ function transferMoney() {
         body: JSON.stringify({
             FromAccountNumber: fromAccount,
             ToAccountNumber: toAccount,
-            Amount: amount
+            Amount: amount,
+            Description: description
         })
     })
         .then(response => {
@@ -409,6 +411,85 @@ function transferMoney() {
         });
 }
 
+var sortAscending = true;
+
+function fetchAndDisplayTransactions() {
+    var selectedAccountNumber = document.getElementById("accountSelector").value;
+
+    fetch(`http://localhost:5181/api/BankAccounts/${selectedAccountNumber}/transactions`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(transactions => {
+            displayTransactions(transactions);
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            document.getElementById("message").innerText = `Failed to fetch transaction history: ${error.message}`;
+        });
+}
+
+function displayTransactions(transactions) {
+    // Display transactions to user
+    let transactionHistoryDiv = document.getElementById("transactionHistory");
+    transactionHistoryDiv.innerHTML = ""; // Clear any existing transaction history
+
+    let table = document.createElement("table");
+    table.setAttribute("id", "transactionTable");
+    table.setAttribute("class", "transaction-table");
+
+    let headerRow = document.createElement("tr");
+
+    ["Amount", "From Account", "To Account", "Description", "Timestamp"].forEach(headerText => {
+        let header = document.createElement("th");
+        header.textContent = headerText;
+        headerRow.appendChild(header);
+    });
+
+    // Add a "Sort by Date" button
+    let sortButton = document.createElement("button");
+    sortButton.textContent = "Sort by Date";
+    sortButton.addEventListener("click", function () {
+        sortAscending = !sortAscending; // Toggle between ascending and descending
+        transactions.sort((a, b) => {
+            const dateA = new Date(a.timestamp);
+            const dateB = new Date(b.timestamp);
+            return sortAscending ? dateA - dateB : dateB - dateA;
+        });
+        displayTransactions(transactions);
+    });
+
+    transactionHistoryDiv.appendChild(sortButton);
+    table.appendChild(headerRow);
+
+    transactions.forEach(transaction => {
+        let row = document.createElement("tr");
+        [transaction.amount, transaction.fromAccountNumber, transaction.toAccountNumber, transaction.description, transaction.timestamp].forEach(text => {
+            let cell = document.createElement("td");
+            cell.textContent = text;
+            row.appendChild(cell);
+        });
+        table.appendChild(row);
+    });
+
+    transactionHistoryDiv.appendChild(table);
+}
+
+// Sorting function
+function sortTable(data, column) {
+    data.sort((a, b) => {
+        if (a[column] < b[column]) {
+            return -1;
+        }
+        if (a[column] > b[column]) {
+            return 1;
+        }
+        return 0;
+    });
+}
 
 
 document.addEventListener("DOMContentLoaded", displayLogout);

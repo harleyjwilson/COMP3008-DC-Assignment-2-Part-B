@@ -112,9 +112,7 @@ namespace LocalDBWebApiUsingEF.Controllers
         //      "FromAccountNumber": 10001,
         //      "ToAccountNumber": 10002,
         //      "Amount": 100.00
-
-
-    [HttpPost("transfer")]
+        [HttpPost("transfer")]
         public async Task<IActionResult> TransferMoney([FromBody] TransferDto transfer)
         {
             // Step 1: Validate the TransferDto
@@ -140,7 +138,18 @@ namespace LocalDBWebApiUsingEF.Controllers
             fromAccount.Balance -= (double)transfer.Amount;
             toAccount.Balance += (double)transfer.Amount;
 
-            // Step 3, 4, and 5: Update the BankAccount Balances and User Model, and Persist Changes
+            // Step 3: Create a Transaction record
+            var transaction = new Transaction
+            {
+                FromAccountNumber = transfer.FromAccountNumber,
+                ToAccountNumber = transfer.ToAccountNumber,
+                Amount = (double)transfer.Amount,
+                Description = transfer.Description,
+                Timestamp = DateTime.UtcNow // Using UtcNow to avoid timezone issues
+            };
+            _context.Transactions.Add(transaction);
+
+            // Step 4, and 5: Update the BankAccount Balances and User Model, and Persist Changes
             try
             {
                 _context.Update(fromAccount);
@@ -157,5 +166,28 @@ namespace LocalDBWebApiUsingEF.Controllers
             return Ok(new { Message = "Transfer successful" });
         }
 
+
+        [HttpGet("{accountNumber}/transactions")]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(int accountNumber)
+        {
+            var transactions = await _context.Transactions
+                                .Where(t => t.FromAccountNumber == accountNumber || t.ToAccountNumber == accountNumber)
+                                .OrderByDescending(t => t.Timestamp)
+                                .ToListAsync();
+
+            if (!transactions.Any())
+            {
+                return NotFound("No transactions found.");
+            }
+            return transactions;
+        }
+
+
+
     }
+
+
+
+
+
 }
