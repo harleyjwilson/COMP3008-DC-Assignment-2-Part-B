@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateTransferDtoModelDescription : Migration
+    public partial class InitialDBCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
