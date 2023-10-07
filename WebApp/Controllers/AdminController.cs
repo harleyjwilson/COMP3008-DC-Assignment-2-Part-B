@@ -203,5 +203,18 @@ namespace WebApp.Controllers
             }
             return PartialView("Users/AdminUsersViewDefault");
         }
+
+        [HttpGet("transactions")]
+        public IActionResult GetAdminTransactionsView()
+        {
+            if (Request.Cookies.ContainsKey("SessionID"))
+            {
+                if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
+                {
+                    return PartialView("Transactions/AdminTransactionsViewAuthenticated");
+                }
+            }
+            return PartialView("Transactions/AdminTransactionsViewDefault");
+        }
     }
 }
