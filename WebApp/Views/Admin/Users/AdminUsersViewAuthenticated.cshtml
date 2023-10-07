@@ -5,19 +5,19 @@
     var user = (User)ViewData["Users"];
     @* var imageUrl = "http://localhost:5181" + user.Picture; *@
 }
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-            <a href="#" class="nav-link text-dark" onclick="loadView('admin')">Admin</a>
+<nav class="navbar">
+    <ul class="nav-ul">
+        <li class="nav-li">
+            <a href="#" class="nav-a" onclick="loadView('admin')">Admin</a>
         </li>
-        <li>
-            <a href="#" class="nav-link text-dark" onclick="loadView('adminusers')">User Management</a>
+        <li class="nav-li">
+            <a href="#" class="nav-a" onclick="loadView('adminusers')">User Management</a>
         </li>
-        <!-- <li>
-            <a href="#" class="nav-link text-dark" onclick="loadView('admintransactions')">Transaction Management</a>
-        </li> -->
+        <li class="nav-li">
+            <a href="#" class="nav-a" onclick="loadView('admintransactions')">Transaction Management</a>
+        </li>
     </ul>
-</div>
+</nav>
 
 <h1 id="status">
     Welcome!

@@ -14,7 +14,7 @@ function loadView(status) {
   if (status === "account") apiUrl = "/api/account/view";
   if (status === "admin") apiUrl = "/api/admin/view";
   if (status === "adminusers") apiUrl = "/api/admin/users";
-  // if (status === "admintransactions") apiUrl = "/api/admin/transactions";
+  if (status === "admintransactions") apiUrl = "/api/admin/transactions";
   if (status === "logout") apiUrl = "/api/logout";
 
   console.log("Hello " + apiUrl);
