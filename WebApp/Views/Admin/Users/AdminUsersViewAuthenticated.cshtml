@@ -1,7 +1,9 @@
 ﻿@* @model WebApp.Models.User *@
 
 @{
-    @* ViewData["Title"] = "Admin User Management"; *@
+    ViewData["Title"] = "Admin User Management";
+    var user = (User)ViewData["Users"];
+    @* var imageUrl = "http://localhost:5181" + user.Picture; *@
 }
 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
     <ul class="navbar-nav flex-grow-1">
@@ -59,11 +61,23 @@
 @* By Username *@
 <form>
     <input type="text" name="Username" id="ViewUsername" placeholder="Username" required>
-    <button type="button" id="SubmitSearchUsernameButton" onclick="adminViewUser()">Search User by Username</button>
+    <button type="button" id="SubmitSearchUsernameButton" onclick="adminViewUser('username')">Search User by
+        Username</button>
 </form>
 
 @* By Email *@
 <form>
     <input type="text" name="Email" id="ViewEmailAddress" placeholder="Email Address" required>
-    <button type="button" id="SubmitSearchEmailButton" onclick="adminViewUser()">Search User by Email</button>
+    <button type="button" id="SubmitSearchEmailButton" onclick="adminViewUser('email')">Search User by Email</button>
 </form>
+
+@if (ViewData.ContainsKey("User") && ViewData["User"] != null)
+{
+    <div id="userProfile">
+    <p>Name: @(((User)ViewData["User"]).Name)</p>
+    <p>Email: @(((User)ViewData["User"]).Email)</p>
+    <p>Phone: @(((User)ViewData["User"]).Phone)</p>
+    <p>Address: @(((User)ViewData["User"]).Address)</p>
+    <p>Password: @(((User)ViewData["User"]).Password)</p>
+</div>
+}

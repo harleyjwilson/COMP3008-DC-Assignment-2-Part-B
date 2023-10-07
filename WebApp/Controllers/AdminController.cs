@@ -179,33 +179,29 @@ namespace WebApp.Controllers
             return Json(response);
         }
 
-        [HttpPut("users/resetpassword/{username}")]
-        public IActionResult AdminResetPassword(string username, [FromBody] User request)
+        [HttpGet("users/view/{searchterm}")]
+        public IActionResult AdminSearchUser(string searchterm)
         {
-            var response = new { success = false };
             if (Request.Cookies.ContainsKey("SessionID"))
             {
                 if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/users/" + username);
+                    var task = client.GetFromJsonAsync<User>("api/users/" + searchterm);
                     task.Wait();
                     var user = task.Result;
 
                     if (user != null)
                     {
-                        if (username == request.Username && request.Username != null && request.Password != null)
-                        {
-                            user.Password = request.Password;
-                            var updateTask = client.PutAsJsonAsync<User>("api/users/" + username, user);
-                            updateTask.Wait();
-                            response = new { success = true };
-                        }
+                        ViewData["User"] = user;
+                        Console.WriteLine(user.ToString());
+                        Console.WriteLine("user.Name: " + user.Name);
+                        return PartialView("Users/AdminUsersViewAuthenticated");
                     }
                 }
             }
-            return Json(response);
+            return PartialView("Users/AdminUsersViewDefault");
         }
     }
 }
