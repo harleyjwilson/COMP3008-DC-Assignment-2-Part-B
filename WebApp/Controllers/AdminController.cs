@@ -45,15 +45,15 @@ namespace WebApp.Controllers
                         {
                             admin.Phone = adminUpdate.Phone;
                         }
-                        if (adminUpdate.Email != null && adminUpdate.Phone != "")
+                        if (adminUpdate.Email != null && adminUpdate.Email != "")
                         {
                             admin.Email = adminUpdate.Email;
                         }
                         var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
                         updateTask.Wait();
                         ViewData["Admin"] = admin;
+                        return PartialView("AdminViewAuthenticated");
                     }
-                    return PartialView("AdminViewAuthenticated");
                 }
             }
             return PartialView("AdminViewDefault");
@@ -81,8 +81,8 @@ namespace WebApp.Controllers
                         var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
                         updateTask.Wait();
                         ViewData["Admin"] = admin;
+                        return PartialView("AdminViewAuthenticated");
                     }
-                    return PartialView("AdminViewAuthenticated");
                 }
             }
             return PartialView("AdminViewDefault");
@@ -130,8 +130,8 @@ namespace WebApp.Controllers
             return Json(response);
         }
 
-        [HttpPost("users/edit")]
-        public IActionResult AdminEditUser([FromBody] User editUser)
+        [HttpPost("users/edit/{username}")]
+        public IActionResult AdminEditUser([FromRoute] string username, [FromBody] User editUser)
         {
             var response = new { success = false };
             if (Request.Cookies.ContainsKey("SessionID"))
@@ -140,10 +140,10 @@ namespace WebApp.Controllers
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/users/" + editUser.Username);
+                    var task = client.GetFromJsonAsync<User>("api/users/" + username);
                     task.Wait();
                     var verifyUser = task.Result;
-                    if (verifyUser != null)
+                    if (verifyUser != null && verifyUser.Username == username && editUser.Username == username)
                     {
                         verifyUser.Name = verifyUser.Name == editUser.Name ? verifyUser.Name : editUser.Name;
                         verifyUser.Email = verifyUser.Email == editUser.Email ? verifyUser.Email : editUser.Email; ;
