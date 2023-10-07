@@ -3,6 +3,19 @@
 @{
     ViewData["Title"] = "Admin";
 }
+<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark" onclick="loadView('admin')">Admin</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-dark" onclick="loadView('adminusers')">User Management</a>
+        </li>
+        <!-- <li>
+            <a href="#" class="nav-link text-dark" onclick="loadView('admintransactions')">Transaction Management</a>
+        </li> -->
+    </ul>
+</div>
 <h1 id="status">
     Welcome, <span id="accountSpanUsername">@(((User)ViewData["Admin"]).Name)</span>!
 
@@ -18,12 +31,12 @@
 <form>
     <input type="text" name="Phone" id="AdminPhone" placeholder="Phone Number">
     <input type="text" name="Email" id="AdminEmail" placeholder="Email Address">
-    <button type="button" id="SubmitButton" onclick="updateAdminContact()">Update Contact Details</button>
+    <button type="button" id="SubmitAccountUpdateButton" onclick="updateAdminContact()">Update Contact Details</button>
 </form>
 
 <h2>Update Password</h2>
 <form>
     <input type="password" name="Password1" id="AdminPassword1" placeholder="Enter Password">
     <input type="password" name="Password2" id="AdminPassword2" placeholder="Re-enter Password">
-    <button type="button" id="SubmitButton" onclick="updateAdminPassword()">Update Password</button>
+    <button type="button" id="SubmitPasswordUpdateButton" onclick="updateAdminPassword()">Update Password</button>
 </form>

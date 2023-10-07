@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DBManager))]
-    [Migration("20231006050807_Update TransferDto Model Description")]
-    partial class UpdateTransferDtoModelDescription
+    [Migration("20231007032358_InitialDBCreate")]
+    partial class InitialDBCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
