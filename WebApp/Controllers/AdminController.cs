@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -7,7 +8,7 @@ namespace WebApp.Controllers
     public class AdminController : Controller
     {
         [HttpGet("view")]
-        public IActionResult GetViewAsync()
+        public async Task<IActionResult> GetViewAsync()
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
@@ -15,9 +16,7 @@ namespace WebApp.Controllers
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/admins/" + Request.Cookies["Username"]);
-                    task.Wait();
-                    var admin = task.Result;
+                    var admin = await client.GetFromJsonAsync<Admin>("api/admins/" + Request.Cookies["Username"]);
                     ViewData["Admin"] = admin;
                     return PartialView("AdminViewAuthenticated");
                 }
@@ -27,7 +26,7 @@ namespace WebApp.Controllers
         }
 
         [HttpPost("contact")]
-        public IActionResult UpdateAdminContact([FromBody] Admin adminUpdate)
+        public async Task<IActionResult> UpdateAdminContact([FromBody] Admin adminUpdate)
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
@@ -35,9 +34,7 @@ namespace WebApp.Controllers
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<Admin>("api/admins/" + Request.Cookies["Username"]);
-                    task.Wait();
-                    var admin = task.Result;
+                    var admin = await client.GetFromJsonAsync<Admin>("api/admins/" + Request.Cookies["Username"]);
 
                     if (admin != null)
                     {
@@ -45,15 +42,15 @@ namespace WebApp.Controllers
                         {
                             admin.Phone = adminUpdate.Phone;
                         }
-                        if (adminUpdate.Email != null && adminUpdate.Phone != "")
+                        if (adminUpdate.Email != null && adminUpdate.Email != "")
                         {
                             admin.Email = adminUpdate.Email;
                         }
                         var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
                         updateTask.Wait();
                         ViewData["Admin"] = admin;
+                        return PartialView("AdminViewAuthenticated");
                     }
-                    return PartialView("AdminViewAuthenticated");
                 }
             }
             return PartialView("AdminViewDefault");
@@ -81,8 +78,8 @@ namespace WebApp.Controllers
                         var updateTask = client.PutAsJsonAsync<Admin>("api/admins/" + admin.Username, admin);
                         updateTask.Wait();
                         ViewData["Admin"] = admin;
+                        return PartialView("AdminViewAuthenticated");
                     }
-                    return PartialView("AdminViewAuthenticated");
                 }
             }
             return PartialView("AdminViewDefault");
@@ -124,14 +121,17 @@ namespace WebApp.Controllers
                     var task = client.PostAsJsonAsync<User>("api/users/", user);
                     task.Wait();
                     var result = task.Result;
-                    response = new { success = true };
+                    if (result.StatusCode == HttpStatusCode.OK || result.StatusCode == HttpStatusCode.Created)
+                    {
+                        response = new { success = true };
+                    }
                 }
             }
             return Json(response);
         }
 
-        [HttpPost("users/edit")]
-        public IActionResult AdminEditUser([FromBody] User editUser)
+        [HttpPut("users/edit/{username}")]
+        public IActionResult AdminEditUser([FromRoute] string username, [FromBody] User editUser)
         {
             var response = new { success = false };
             if (Request.Cookies.ContainsKey("SessionID"))
@@ -140,10 +140,21 @@ namespace WebApp.Controllers
                 {
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
-                    var task = client.GetFromJsonAsync<User>("api/users/" + editUser.Username);
-                    task.Wait();
+                    var task = client.GetFromJsonAsync<User>("api/users/" + username);
+                    try
+                    {
+                        task.Wait();
+                    }
+                    catch (AggregateException) // HttpRequestException
+                    {
+                        response = new
+                        {
+                            success = false
+                        };
+                        return Json(response);
+                    }
                     var verifyUser = task.Result;
-                    if (verifyUser != null)
+                    if (verifyUser != null && verifyUser.Username == username && editUser.Username == username)
                     {
                         verifyUser.Name = verifyUser.Name == editUser.Name ? verifyUser.Name : editUser.Name;
                         verifyUser.Email = verifyUser.Email == editUser.Email ? verifyUser.Email : editUser.Email; ;
@@ -154,7 +165,10 @@ namespace WebApp.Controllers
                         var updateTask = client.PutAsJsonAsync<User>("api/users/" + verifyUser.Username, verifyUser);
                         updateTask.Wait();
                         var result = updateTask.Result;
-                        response = new { success = true };
+                        if (result.StatusCode == HttpStatusCode.OK || result.StatusCode == HttpStatusCode.Created || result.StatusCode == HttpStatusCode.NoContent)
+                        {
+                            response = new { success = true };
+                        }
                     }
                 }
             }
@@ -173,7 +187,11 @@ namespace WebApp.Controllers
                     client.BaseAddress = new Uri("http://localhost:5181/");
                     var task = client.DeleteAsync("api/users/" + username);
                     task.Wait();
-                    response = new { success = true };
+                    var result = task.Result;
+                    if (result.StatusCode == HttpStatusCode.OK || result.StatusCode == HttpStatusCode.Created || result.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        response = new { success = true };
+                    }
                 }
             }
             return Json(response);
@@ -189,15 +207,21 @@ namespace WebApp.Controllers
                     var client = new HttpClient();
                     client.BaseAddress = new Uri("http://localhost:5181/");
                     var task = client.GetFromJsonAsync<User>("api/users/" + searchterm);
-                    task.Wait();
-                    var user = task.Result;
-
-                    if (user != null)
+                    try
                     {
-                        ViewData["User"] = user;
-                        Console.WriteLine(user.ToString());
-                        Console.WriteLine("user.Name: " + user.Name);
-                        return PartialView("Users/AdminUsersViewAuthenticated");
+                        task.Wait();
+                        var user = task.Result;
+
+                        if (user != null)
+                        {
+                            ViewData["User"] = user;
+                            return PartialView("Users/AdminUsersViewAuthenticated");
+                        }
+                    }
+                    catch (AggregateException ex) // HttpRequestException
+                    {
+                        Console.WriteLine("Unable to find user: " + ex.Message);
+                        return PartialView("Users/AdminUsersErrorView");
                     }
                 }
             }
