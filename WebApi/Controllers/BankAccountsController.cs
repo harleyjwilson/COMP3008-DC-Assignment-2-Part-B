@@ -2,7 +2,6 @@
 using LocalDBWebApiUsingEF.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebApi.Models;
 
 namespace LocalDBWebApiUsingEF.Controllers
 {
@@ -107,87 +106,5 @@ namespace LocalDBWebApiUsingEF.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-        // POST: api/BankAccounts/transfer
-        //      Sample input
-        //      "FromAccountNumber": 10001,
-        //      "ToAccountNumber": 10002,
-        //      "Amount": 100.00
-        [HttpPost("transfer")]
-        public async Task<IActionResult> TransferMoney([FromBody] TransferDto transfer)
-        {
-            // Step 1: Validate the TransferDto
-            if (transfer.Amount <= 0)
-            {
-                return BadRequest("Transfer amount must be greater than zero.");
-            }
-
-            var fromAccount = await _context.BankAccounts.FindAsync(transfer.FromAccountNumber);
-            var toAccount = await _context.BankAccounts.FindAsync(transfer.ToAccountNumber);
-
-            if (fromAccount == null || toAccount == null)
-            {
-                return NotFound("Account not found.");
-            }
-
-            if (fromAccount.Balance < (double)transfer.Amount)
-            {
-                return BadRequest("Insufficient funds.");
-            }
-
-            // Step 2: Perform the Transfer
-            fromAccount.Balance -= (double)transfer.Amount;
-            toAccount.Balance += (double)transfer.Amount;
-
-            // Step 3: Create a Transaction record
-            var transaction = new Transaction
-            {
-                FromAccountNumber = transfer.FromAccountNumber,
-                ToAccountNumber = transfer.ToAccountNumber,
-                Amount = (double)transfer.Amount,
-                Description = transfer.Description,
-                Timestamp = DateTime.UtcNow // Using UtcNow to avoid timezone issues
-            };
-            _context.Transactions.Add(transaction);
-
-            // Step 4, and 5: Update the BankAccount Balances and User Model, and Persist Changes
-            try
-            {
-                _context.Update(fromAccount);
-                _context.Update(toAccount);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // Handle exception (e.g., concurrency conflict)
-                throw;
-            }
-
-            // Step 6: Return a Response
-            return Ok(new { Message = "Transfer successful" });
-        }
-
-
-        [HttpGet("{accountNumber}/transactions")]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions(int accountNumber)
-        {
-            var transactions = await _context.Transactions
-                                .Where(t => t.FromAccountNumber == accountNumber || t.ToAccountNumber == accountNumber)
-                                .OrderByDescending(t => t.Timestamp)
-                                .ToListAsync();
-
-            if (!transactions.Any())
-            {
-                return NotFound("No transactions found.");
-            }
-            return transactions;
-        }
-
-
-
     }
-
-
-
-
-
 }

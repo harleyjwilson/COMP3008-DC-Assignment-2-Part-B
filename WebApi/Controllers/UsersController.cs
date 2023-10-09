@@ -62,9 +62,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             // If user searches via email
             if (entry.Contains("@"))
             {
-                var user = await _context.Users
-                    .Include(u => u.BankAccounts)  // Ensure BankAccounts are fetched
-                    .FirstOrDefaultAsync(u => u.Email == entry);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == entry);
                 if (user == null)
                 {
                     return NotFound("User not found.");
@@ -74,9 +72,7 @@ namespace LocalDBWebApiUsingEF.Controllers
             // If user searches by username
             else
             {
-                var user = await _context.Users
-                    .Include(u => u.BankAccounts)  // Ensure BankAccounts are fetched
-                    .FirstOrDefaultAsync(u => u.Username == entry);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == entry);
                 if (user == null)
                 {
                     return NotFound("User not found.");
