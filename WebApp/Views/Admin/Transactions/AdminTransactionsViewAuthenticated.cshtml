@@ -22,28 +22,40 @@
 </h1>
 
 <form>
-    <form>
-        <div class="form-div">
-            <label for="accountSelector">Select Account:</label>
-            <select id="adminAccountSelector" name="accountSelector">
-                @if (ViewData.ContainsKey("BankAccounts") && ViewData["BankAccounts"] != null)
+    <div class="form-div">
+        <label for="search">Search Transactions:</label>
+        <input type="text" name="search" id="AdminSearchText" placeholder="..." />
+    </div>
+    <div>
+        <button type="button" id="SubmitSearchAdminTransactionButton" onclick="adminSearchTransactions()">Search</button>
+    </div>
+</form>
+
+<br/>
+
+<form>
+    <div class="form-div">
+        <label for="accountSelector">Select Account:</label>
+        <select id="adminAccountSelector" name="accountSelector">
+            @if (ViewData.ContainsKey("BankAccounts") && ViewData["BankAccounts"] != null)
+            {
+                List<BankAccount>? accounts = ViewData["BankAccounts"] as List<BankAccount>;
+                if (accounts != null)
                 {
-                    List<BankAccount>? accounts = ViewData["BankAccounts"] as List<BankAccount>;
-                    if (accounts != null)
+                    @foreach (var account in accounts)
                     {
-                        @foreach (var account in accounts)
-                        {
-                            <option value="@account.AccountNumber">@account.AccountNumber</option>
-                        }
+                        <option value="@account.AccountNumber">@account.AccountNumber</option>
                     }
                 }
-            </select>
-        </div>
-        <div>
-            <button type="button" id="SubmitFilterAdminTransactionButton" onclick="adminFilterTransactions()">Filter by Account Number</button>
-        </div>
-    </form>
+            }
+        </select>
+    </div>
+    <div>
+        <button type="button" id="SubmitFilterAdminTransactionButton" onclick="adminFilterTransactions()">Filter by Account Number</button>
+    </div>
 </form>
+
+<br/>
 
 <h2>Transaction Table</h2>
 
