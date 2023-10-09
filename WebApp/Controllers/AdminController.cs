@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
+using Newtonsoft.Json;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -235,6 +237,30 @@ namespace WebApp.Controllers
             {
                 if (AdminLoginController.verifyAdminSessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
+                    var client = new HttpClient();
+                    client.BaseAddress = new Uri("http://localhost:5181/");
+                    var task = client.GetFromJsonAsync<List<BankAccount>>("api/bankaccounts");
+                    task.Wait();
+                    var bankAccounts = task.Result;
+
+                    List<Transaction> transactions = new List<Transaction>();
+
+                    if (bankAccounts != null)
+                    {
+
+                        foreach (var account in bankAccounts!)
+                        {
+                            Console.WriteLine(account.ToString());
+                            foreach( var transaction in account.Transactions)
+                            {
+                                transactions.Add(transaction);
+                            }
+                        }
+
+                    }
+
+                    ViewData["BankAccounts"] = bankAccounts;
+                    ViewData["Transactions"] = transactions;
                     return PartialView("Transactions/AdminTransactionsViewAuthenticated");
                 }
             }

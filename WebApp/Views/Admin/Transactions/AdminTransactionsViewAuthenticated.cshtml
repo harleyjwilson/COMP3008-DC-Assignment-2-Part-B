@@ -18,5 +18,62 @@
 </nav>
 
 <h1 id="status">
-    Welcome! - Admin Transaction Management
+    Welcome!
 </h1>
+
+<form>
+    <form>
+        <div class="form-div">
+            <label for="accountSelector">Select Account:</label>
+            <select id="accountSelector" name="accountSelector">
+                @if (ViewData.ContainsKey("BankAccounts") && ViewData["BankAccounts"] != null)
+                {
+                    List<BankAccount>? accounts = ViewData["BankAccounts"] as List<BankAccount>;
+                    if (accounts != null)
+                    {
+                        @foreach (var account in accounts)
+                        {
+                            <option value="@account.AccountNumber">@account.AccountNumber</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <button type="button" id="SubmitFilterAdminTransactionButton" onclick="adminFilterTransactions()">Filter by Account Number</button>
+        </div>
+    </form>
+</form>
+
+<h2>Transaction Table</h2>
+
+<table id="transaction-table">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>From Account</th>
+            <th>To Account</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody id="transaction-table-body">
+        @if (ViewData.ContainsKey("Transactions") && ViewData["Transactions"] != null)
+        {
+            List<Transaction>? transactions = ViewData["Transactions"] as List<Transaction>;
+            if (transactions != null)
+            {
+                foreach (var transaction in transactions)
+                {
+                    <tr>
+                        <td>@transaction.TransactionId</td>
+                        <td>@transaction.FromAccountNumber</td>
+                        <td>@transaction.ToAccountNumber</td>
+                        <td>@transaction.Amount</td>
+                        <td>@transaction.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
