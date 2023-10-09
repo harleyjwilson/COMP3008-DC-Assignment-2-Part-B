@@ -20,3 +20,34 @@
 <h1 id="status">
     Welcome! - Admin Transaction Management
 </h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>From Account</th>
+            <th>To Account</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewData.ContainsKey("Transactions") && ViewData["Transactions"] != null)
+        {
+            List<Transaction>? transactions = ViewData["Transactions"] as List<Transaction>;
+            if (transactions != null)
+            {
+                foreach (var transaction in transactions)
+                {
+                    <tr>
+                        <td>@transaction.TransactionId</td>
+                        <td>@transaction.FromAccountNumber</td>
+                        <td>@transaction.ToAccountNumber</td>
+                        <td>@transaction.Amount</td>
+                        <td>@transaction.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
