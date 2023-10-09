@@ -251,7 +251,7 @@ namespace WebApp.Controllers
                         foreach (var account in bankAccounts!)
                         {
                             Console.WriteLine(account.ToString());
-                            foreach( var transaction in account.Transactions)
+                            foreach (var transaction in account.Transactions)
                             {
                                 transactions.Add(transaction);
                             }

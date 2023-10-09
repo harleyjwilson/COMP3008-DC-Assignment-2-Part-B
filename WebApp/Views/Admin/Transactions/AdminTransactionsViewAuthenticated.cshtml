@@ -25,7 +25,7 @@
     <form>
         <div class="form-div">
             <label for="accountSelector">Select Account:</label>
-            <select id="accountSelector" name="accountSelector">
+            <select id="adminAccountSelector" name="accountSelector">
                 @if (ViewData.ContainsKey("BankAccounts") && ViewData["BankAccounts"] != null)
                 {
                     List<BankAccount>? accounts = ViewData["BankAccounts"] as List<BankAccount>;
