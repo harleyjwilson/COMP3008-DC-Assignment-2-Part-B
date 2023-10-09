@@ -489,6 +489,42 @@ function adminSearchTransactions() {
     }
 }
 
+function adminSortTransactions() {
+    var sortType = document.getElementById("adminAccountSorter").value;
+    var table = document.getElementById("transaction-table-body");
+    var tableBody = document.getElementById("transaction-table-body");
+    var rows = Array.from(table.getElementsByTagName("tr"));
+
+    if (sortType === "Amount Ascending") {
+        rows.sort((a, b) => {
+            var aAmount = parseFloat(a.cells[3].textContent);
+            var bAmount = parseFloat(b.cells[3].textContent);
+            return aAmount - bAmount;
+        });
+    } else if (sortType === "Amount Descending") {
+        rows.sort((a, b) => {
+            var aAmount = parseFloat(a.cells[3].textContent);
+            var bAmount = parseFloat(b.cells[3].textContent);
+            return bAmount - aAmount;
+        });
+    } else if (sortType === "Account ID Ascending") {
+        rows.sort((a, b) => {
+            var aString = a.cells[1].textContent;
+            var bString = b.cells[1].textContent;
+            return aString - bString;
+        });
+    } else if (sortType === "Account ID Descending") {
+        rows.sort((a, b) => {
+            var aString = a.cells[1].textContent;
+            var bString = b.cells[1].textContent;
+            return bString - aString;
+        });
+    }
+    rows.forEach(row => {
+        tableBody.appendChild(row);
+    });
+}
+
 function showEditForm() {
   console.log("Button Clicked!"); // Log a message to the console when the function is called
   document.getElementById("editProfileForm").style.display = "block";
