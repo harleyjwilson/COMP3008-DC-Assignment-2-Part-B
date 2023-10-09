@@ -57,6 +57,21 @@
 
 <br/>
 
+<form>
+    <div class="form-div">
+        <label for="accoutSorter">Select Account:</label>
+        <select id="adminAccountSorter" name="accoutSorter">
+            <option value="Amount Ascending">Amount Ascending</option>
+            <option value="Amount Descending">Amount Descending</option>
+            <option value="Account ID Ascending">Account ID Ascending</option>
+            <option value="Account ID Descending">Account ID Descending</option>
+        </select>
+    </div>
+    <div>
+        <button type="button" id="SubmitSortAdminTransactionButton" onclick="adminSortTransactions()">Sort</button>
+    </div>
+</form>
+
 <h2>Transaction Table</h2>
 
 <table id="transaction-table">
