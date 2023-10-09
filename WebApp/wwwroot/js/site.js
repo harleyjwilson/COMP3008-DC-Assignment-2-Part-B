@@ -459,6 +459,36 @@ function adminFilterTransactions() {
     }
 }
 
+function adminSearchTransactions() {
+    var table = document.getElementById("transaction-table-body");
+    var rows = table.getElementsByTagName("tr");
+    let searchTerm = document.getElementById("AdminSearchText").value;
+    if (searchTerm == null || searchTerm == undefined) {
+        console.log("No search term entered");
+        return
+    }
+
+    for (var i = 0; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName("td");
+        let found = false;
+
+        for (var j = 0; j < cells.length; j++) {
+            let cellString = cells[j].textContent;
+            console.log("cellString:" + cellString);
+            console.log("found:" + cellString.includes(searchTerm));
+            if (cellString.includes(searchTerm)) {
+                found = true;
+            }
+        }
+
+        if (found) {
+            rows[i].style.display = "table-row";
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+}
+
 function showEditForm() {
   console.log("Button Clicked!"); // Log a message to the console when the function is called
   document.getElementById("editProfileForm").style.display = "block";
