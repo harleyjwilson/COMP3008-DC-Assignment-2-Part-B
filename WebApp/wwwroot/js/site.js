@@ -442,6 +442,22 @@ function adminViewUser(searchType) {
       console.error("Fetch error:", error);
     });
 }
+function adminFilterTransactions() {
+    var selectedAccount = document.getElementById("adminAccountSelector").value;
+    var table = document.getElementById("transaction-table-body");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName("td");
+        var fromAccountNumber = cells[1].textContent;
+
+        if (fromAccountNumber !== selectedAccount) {
+            rows[i].style.display = "none";
+        } else {
+            rows[i].style.display = "table-row";
+        }
+    }
+}
 
 function showEditForm() {
   console.log("Button Clicked!"); // Log a message to the console when the function is called
@@ -661,5 +677,5 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("click", showTransferForm);
   document
     .getElementById("performTransferBtn")
-    .addEventListener("click", transferMoney);
+        .addEventListener("click", transferMoney);
 });
