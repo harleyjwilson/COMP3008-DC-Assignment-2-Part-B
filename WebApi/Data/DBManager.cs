@@ -16,6 +16,7 @@ namespace LocalDBWebApiUsingEF.Data {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             //Get randomly generated users
             List<User> users = FixedSizeUserList.GetInstance().GetUsers();
+            List<BankAccount> bankAccounts = FixedSizeUserList.GetInstance().GetBankAccounts();
             modelBuilder.Entity<User>().HasData(users);
 
             // AdminUser Seed Data
@@ -32,18 +33,6 @@ namespace LocalDBWebApiUsingEF.Data {
                 }
             };
             modelBuilder.Entity<Admin>().HasData(admin);
-
-            // BankAccount Seed Data
-            List<BankAccount> bankAccounts = new List<BankAccount>();
-            // Randomly associate bank accounts with users
-            int accountNumber = 10000;
-            for (int i = 0; i < users.Count; i++) { //create a bank account for each user currently
-                bankAccounts.Add(new BankAccount(accountNumber, users[i].Username) {
-                    AccountHolderName = $"{users[i].Name}'s Account",
-                    Balance = new Random().NextDouble() * 10000 // random balance between 0 to 10000
-                });
-                accountNumber++;
-            }
 
             // Transaction Seed Data
             List<Transaction> transactions = new List<Transaction>();
@@ -62,7 +51,7 @@ namespace LocalDBWebApiUsingEF.Data {
                 } while (senderAccount.AccountNumber == receiverAccount.AccountNumber);
 
                 // Generate a random transaction amount that's less than the sender account's balance
-                double transactionAmount = random.NextDouble() * senderAccount.Balance;
+                double transactionAmount = Math.Round(random.NextDouble() * senderAccount.Balance);
 
                 // Creates transaction record
                 transactions.Add(new Transaction {

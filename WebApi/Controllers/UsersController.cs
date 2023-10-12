@@ -1,80 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Text.RegularExpressions;
 using LocalDBWebApiUsingEF.Data;
 using LocalDBWebApiUsingEF.Models;
-using System.Text.RegularExpressions;
-using MessagePack;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
-namespace LocalDBWebApiUsingEF.Controllers
-{
+namespace LocalDBWebApiUsingEF.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
-    {
+    public class UsersController : ControllerBase {
         private readonly DBManager _context;
 
-        public UsersController(DBManager context)
-        {
+        public UsersController(DBManager context) {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Users (with BankAccounts)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers() {
+            return await _context.Users.Include(u => u.BankAccounts).ToListAsync();
         }
+
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
-        {
-            if (!ValidUser(user))
-            {
+        public async Task<ActionResult<User>> CreateUser(User user) {
+            if (!ValidUser(user)) {
                 return BadRequest("Invalid user details provided.");
             }
-            try
-            {
+            try {
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetUserByEmail), new { email = user.Email }, user);
-            }
-            catch (DbUpdateException)
-            {
+            } catch (DbUpdateException) {
                 return BadRequest("User already exists with this username.");
             }
         }
 
-        // GET: api/Users/{entry}
+        // GET: api/Users/{entry} (with BankAccounts)
         [HttpGet("{entry}")]
-        public async Task<ActionResult<User>> GetUserByEmail(string entry)
-        {
-            if (!ValidUsername(entry) && !ValidEmail(entry))
-            {
+        public async Task<ActionResult<User>> GetUserByEmail(string entry) {
+            if (!ValidUsername(entry) && !ValidEmail(entry)) {
                 return BadRequest("Invalid user details provided.");
             }
             // If user searches via email
-            if (entry.Contains("@"))
-            {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == entry);
-                if (user == null)
-                {
+            if (entry.Contains("@")) {
+                var user = await _context.Users.Include(u => u.BankAccounts).FirstOrDefaultAsync(u => u.Email == entry);
+                if (user == null) {
                     return NotFound("User not found.");
                 }
                 return user;
             }
             // If user searches by username
-            else
-            {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == entry);
-                if (user == null)
-                {
+            else {
+                var user = await _context.Users.Include(u => u.BankAccounts).FirstOrDefaultAsync(u => u.Username == entry);
+                if (user == null) {
                     return NotFound("User not found.");
                 }
                 return user;
@@ -83,15 +63,12 @@ namespace LocalDBWebApiUsingEF.Controllers
 
         // PUT: api/Users/{username}
         [HttpPut("{username}")]
-        public async Task<IActionResult> UpdateUserProfile(string username, User updatedUser)
-        {
-            if (!ValidUsername(username) || !ValidUser(updatedUser))
-            {
+        public async Task<IActionResult> UpdateUserProfile(string username, User updatedUser) {
+            if (!ValidUsername(username) || !ValidUser(updatedUser)) {
                 return BadRequest("Invalid user details provided.");
             }
             var existingUser = await _context.Users.FindAsync(username);
-            if (existingUser == null)
-            {
+            if (existingUser == null) {
                 return NotFound("User not found.");
             }
 
@@ -106,18 +83,13 @@ namespace LocalDBWebApiUsingEF.Controllers
 
             _context.Entry(existingUser).State = EntityState.Modified;
 
-            try
-            {
+            try {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Users.Any(e => e.Username == username))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!_context.Users.Any(e => e.Username == username)) {
                     return NotFound("User not found.");
                 }
-                else
-                {
+                else {
                     throw;
                 }
             }
@@ -128,15 +100,12 @@ namespace LocalDBWebApiUsingEF.Controllers
 
         // DELETE: api/Users/{username}
         [HttpDelete("{username}")]
-        public async Task<IActionResult> DeleteUser(string username)
-        {
-            if (!ValidUsername(username))
-            {
+        public async Task<IActionResult> DeleteUser(string username) {
+            if (!ValidUsername(username)) {
                 return BadRequest("Invalid user details provided.");
             }
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound("User not found.");
             }
             _context.Users.Remove(user);
@@ -144,27 +113,22 @@ namespace LocalDBWebApiUsingEF.Controllers
             return NoContent();
         }
 
-        private static bool ValidUser(User user)
-        {
-            if (!ValidUsername(user.Username))
-            {
+        private static bool ValidUser(User user) {
+            if (!ValidUsername(user.Username)) {
                 return false;
             }
-            if (user.Email != null && !ValidEmail(user.Email))
-            {
+            if (user.Email != null && !ValidEmail(user.Email)) {
                 return false;
             }
             return true;
         }
 
-        public static bool ValidUsername(string username)
-        {
+        public static bool ValidUsername(string username) {
             string pattern = @"^[a-zA-Z0-9]+$";
             return Regex.IsMatch(username, pattern);
         }
 
-        private static bool ValidEmail(string email)
-        {
+        private static bool ValidEmail(string email) {
             string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
             return Regex.IsMatch(email, pattern);
         }
