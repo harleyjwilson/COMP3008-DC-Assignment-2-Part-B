@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace LocalDBWebApiUsingEF.Models
-{
-    public class BankAccount
-    {
-        public BankAccount(int AccountNumber, string UserUsername)
-        {
+namespace LocalDBWebApiUsingEF.Models {
+    public class BankAccount {
+        public BankAccount(int AccountNumber, string UserUsername) {
             this.AccountNumber = AccountNumber;
             this.UserUsername = UserUsername!;
         }

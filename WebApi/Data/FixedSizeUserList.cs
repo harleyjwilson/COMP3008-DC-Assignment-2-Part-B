@@ -1,4 +1,5 @@
-﻿using LocalDBWebApiUsingEF.Models;
+﻿////Generates a user list with a bank account
+using LocalDBWebApiUsingEF.Models;
 
 namespace WebApi.Data {
     public class FixedSizeUserList {
@@ -6,16 +7,50 @@ namespace WebApi.Data {
         private static object _lockObject = new object();
 
         private List<User> _users;
+        private List<BankAccount> _bankAccounts;
         private int _size;
         private UserGenerator _userGenerator;
 
-        private const int NUMBER_OF_ENTRIES = 1_000;
+        //private const int NUMBER_OF_ENTRIES = 1_002;
+        private const int NUMBER_OF_ENTRIES = 12;
 
         private FixedSizeUserList(int size) {
             _size = size;
             _users = new List<User>(size);
+            _bankAccounts = new List<BankAccount>(size);
             _userGenerator = new UserGenerator();
+            //Creating two additional users for testing purposes
+            GenerateTestAccounts();
             PopulateUsers();
+        }
+
+        private void GenerateTestAccounts() {
+            _users.Add(new User("userjoe") {
+                Name = "Joe Biden",
+                Email = "biden@potus.com",
+                Address = "Washington DC",
+                Phone = "777-777-7777",
+                Password = "userpassword",
+                Picture = null, //TODO: Add picture
+                SessionID = "null"
+            });
+            _bankAccounts.Add(new BankAccount(1, "userjoe") {
+                AccountHolderName = "Joe Biden's Account",
+                Balance = 100000
+            });
+            _users.Add(new User("userdonald") {
+                Name = "Donald Trump",
+                Email = "donald@realdonald.com",
+                Address = "Florida",
+                Phone = "666-666-6666",
+                Password = "userpassword",
+                Picture = null, //TODO: Add picture
+                SessionID = "null"
+            });
+            _bankAccounts.Add(new BankAccount(2, "userdonald") {
+                AccountHolderName = "Donald Trump's Account",
+                Balance = 100000
+            });
         }
 
         public static FixedSizeUserList GetInstance() {
@@ -49,12 +84,32 @@ namespace WebApi.Data {
                     Password = password
                 };
 
+                // Create a bank account for the user
+                BankAccount bankAccount = GenerateBankAccountForUser(user);
+
                 _users.Add(user);
+                _bankAccounts.Add(bankAccount); // Add the bank account to the bank accounts list
             }
+        }
+
+        // Generates a bank account for a given user
+        private BankAccount GenerateBankAccountForUser(User user) {
+            int accountNumber = _bankAccounts.Count + 1; // Calculate next account number based on existing accounts
+            BankAccount bankAccount = new BankAccount(accountNumber, user.Username) {
+                AccountHolderName = $"{user.Name}'s Account",
+                // random balance between 0 to 10000 with 2 decimal places
+                Balance = Math.Round(new Random().NextDouble() * 10000, 2)
+            };
+
+            return bankAccount;
         }
 
         public List<User> GetUsers() {
             return _users;
+        }
+
+        public List<BankAccount> GetBankAccounts() {
+            return _bankAccounts;
         }
 
         public User GetUser(int index) {
