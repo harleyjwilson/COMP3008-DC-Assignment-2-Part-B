@@ -38,6 +38,7 @@ else
     Admin? admin = ViewData["Admin"] as Admin;
     if (admin != null)
     {
+        <img src="data:image/bmp;base64, @admin.Picture" width="100px" height="100px" alt="Admin Profile" />
         <p>Username: @admin.Username</p>
         <p>Name: @admin.Name</p>
         <p>Email Address: @admin.Email</p>
