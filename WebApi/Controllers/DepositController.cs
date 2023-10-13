@@ -25,7 +25,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
                 return BadRequest("Invalid amount - Can't deposit 0.0");
             }
             account.Balance = account.Balance + transact.Amount;
-            account.Transactions.Add(transact);
+            account.ToTransactions.Add(transact);
             _context.Entry(account).State = EntityState.Modified;
             try {
                 await _context.SaveChangesAsync();
