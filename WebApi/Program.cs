@@ -29,7 +29,7 @@ if (!app.Environment.IsDevelopment()) {
 }
 app.UseStaticFiles();
 
-// CORS middleware
+// Whitelist all origins
 app.UseCors("AllowAll");
 
 app.UseRouting();

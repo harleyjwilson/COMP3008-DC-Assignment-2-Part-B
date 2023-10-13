@@ -132,18 +132,18 @@ namespace LocalDBWebApiUsingEF.Controllers {
             return NoContent();
         }
 
-        // GET: api/BankAccounts/{accountNumber}/transactions TODO: TEST
+        // GET: api/BankAccounts/{accountNumber}/transactions
         [HttpGet("{accountNumber}/transactions")]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsForAccount(int accountNumber) {
-            var account = await _context.BankAccounts
-                                        .Include(b => b.Transactions)
-                                        .FirstOrDefaultAsync(b => b.AccountNumber == accountNumber);
+            var fromTransactions = await _context.Transactions
+                                                 .Where(t => t.FromAccountNumber == accountNumber)
+                                                 .ToListAsync();
 
-            if (account == null) {
-                return NotFound("Bank account not found.");
-            }
+            var toTransactions = await _context.Transactions
+                                               .Where(t => t.ToAccountNumber == accountNumber)
+                                               .ToListAsync();
 
-            return account.Transactions.ToList();
+            return fromTransactions.Concat(toTransactions).ToList();
         }
     }
 }
