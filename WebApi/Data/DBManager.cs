@@ -1,6 +1,9 @@
 ﻿using LocalDBWebApiUsingEF.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Newtonsoft.Json;
 using WebApi.Data;
+using WebApi.Models;
 
 namespace LocalDBWebApiUsingEF.Data {
     public class DBManager : DbContext {
@@ -12,6 +15,8 @@ namespace LocalDBWebApiUsingEF.Data {
         public DbSet<Admin> Admins { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+
+        public DbSet<AuditLog> AuditLogs { get; set; } // Add the AuditLogs DbSet
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             //Get randomly generated users
@@ -115,5 +120,44 @@ namespace LocalDBWebApiUsingEF.Data {
 
             modelBuilder.Entity<BankAccount>().HasData(bankAccounts);
         }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+            var entries = ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified);
+            foreach (var entry in entries) {
+                AddAuditLogIfModified(entry);
+            }
+
+            try {
+                return await base.SaveChangesAsync(cancellationToken);
+            } catch (Exception ex) {
+                // Handle exceptions here
+                throw;
+            }
+        }
+
+        private void AddAuditLogIfModified(EntityEntry entry) {
+            string entityName = null;
+            object original = null;
+            object current = null;
+            string action = "Modified";
+
+            if (entry.Entity is Admin || entry.Entity is User || entry.Entity is BankAccount) {
+                entityName = entry.Entity.GetType().Name;
+                original = JsonConvert.SerializeObject(entry.OriginalValues.ToObject());
+                current = JsonConvert.SerializeObject(entry.CurrentValues.ToObject());
+
+                var auditLog = new AuditLog {
+                    EntityName = entityName,
+                    Action = action,
+                    OriginalValues = original.ToString(),
+                    CurrentValues = current.ToString(),
+                    Timestamp = DateTime.UtcNow
+                };
+
+                AuditLogs.Add(auditLog);
+            }
+        }
+
+
     }
 }
