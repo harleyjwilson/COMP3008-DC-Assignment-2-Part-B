@@ -84,7 +84,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
         }
 
 
-        // GET: api/BankAccounts/12345
+        // GET: api/BankAccounts/{accountNumber}
         [HttpGet("{accountNumber}")]
         public async Task<ActionResult<BankAccount>> GetBankAccount(int accountNumber) {
             var account = await _context.BankAccounts
@@ -99,7 +99,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
             return account;
         }
 
-        // PUT: api/BankAccounts/12345
+        // PUT: api/BankAccounts/{accountNumber}
         [HttpPut("{accountNumber}")]
         public async Task<IActionResult> UpdateBankAccount(int accountNumber, BankAccount account) {
             if (accountNumber != account.AccountNumber) {
@@ -122,7 +122,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
             return NoContent();
         }
 
-        // DELETE: api/BankAccounts/12345
+        // DELETE: api/BankAccounts/{accountNumber}
         [HttpDelete("{accountNumber}")]
         public async Task<IActionResult> DeleteBankAccount(int accountNumber) {
             var account = await _context.BankAccounts.FindAsync(accountNumber);
