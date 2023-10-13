@@ -91,13 +91,20 @@ namespace WebApp.Controllers
             }
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:5181/");
-                var task = client.GetFromJsonAsync<Admin>("api/admins/" + username);
-                task.Wait();
-                var verifyUser = task.Result;
-                if (verifyUser != null && verifyUser.SessionID == sessionID)
+                try
                 {
-                    return true;
+                    client.BaseAddress = new Uri("http://localhost:5181/");
+                    var task = client.GetFromJsonAsync<Admin>("api/admins/" + username);
+                    task.Wait();
+                    var verifyUser = task.Result;
+                    if (verifyUser != null && verifyUser.SessionID == sessionID)
+                    {
+                        return true;
+                    }
+                }
+                catch (AggregateException)
+                {
+                    return false;
                 }
             }
             return false;
