@@ -12,7 +12,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
         public WithdrawController(DBManager context) {
             _context = context;
         }
-        // POST: api/deposit
+        // POST: api/withdraw
         [HttpPost]
         public async Task<ActionResult<BankAccount>> ProcessWithdrawal(Transaction transact) {
             var account = await _context.BankAccounts
@@ -32,7 +32,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
 
             if (newBalance >= 0.0) {
                 account.Balance = newBalance;
-                account.Transactions.Add(transact);
+                account.FromTransactions.Add(transact);
                 _context.Entry(account).State = EntityState.Modified;
                 try {
                     await _context.SaveChangesAsync();

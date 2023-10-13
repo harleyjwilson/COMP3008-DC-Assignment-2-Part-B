@@ -18,8 +18,11 @@ namespace LocalDBWebApiUsingEF.Models {
         [JsonIgnore]
         public virtual User? User { get; set; }
 
+        // Transactions initiated from this account
+        public virtual ICollection<Transaction> FromTransactions { get; set; } = new List<Transaction>();
 
-        public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+        // Transactions received to this account
+        public virtual ICollection<Transaction> ToTransactions { get; set; } = new List<Transaction>();
 
     }
 }

@@ -19,7 +19,8 @@ namespace LocalDBWebApiUsingEF.Controllers {
         public async Task<ActionResult<IEnumerable<BankAccount>>> GetAllBankAccounts() {
             return await _context.BankAccounts
                     .Include(b => b.User)
-                    .Include(b => b.Transactions)
+                    .Include(b => b.FromTransactions)
+                    .Include(b => b.ToTransactions)
                     .ToListAsync();
         }
 
@@ -83,12 +84,13 @@ namespace LocalDBWebApiUsingEF.Controllers {
         }
 
 
-        // GET: api/BankAccounts/12345
+        // GET: api/BankAccounts/{accountNumber}
         [HttpGet("{accountNumber}")]
         public async Task<ActionResult<BankAccount>> GetBankAccount(int accountNumber) {
             var account = await _context.BankAccounts
                             .Include(b => b.User)
-                            .Include(b => b.Transactions)
+                            .Include(b => b.FromTransactions)
+                            .Include(b => b.ToTransactions)
                             .FirstOrDefaultAsync(b => b.AccountNumber == accountNumber);
 
             if (account == null) {
@@ -97,7 +99,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
             return account;
         }
 
-        // PUT: api/BankAccounts/12345
+        // PUT: api/BankAccounts/{accountNumber}
         [HttpPut("{accountNumber}")]
         public async Task<IActionResult> UpdateBankAccount(int accountNumber, BankAccount account) {
             if (accountNumber != account.AccountNumber) {
@@ -120,7 +122,7 @@ namespace LocalDBWebApiUsingEF.Controllers {
             return NoContent();
         }
 
-        // DELETE: api/BankAccounts/12345
+        // DELETE: api/BankAccounts/{accountNumber}
         [HttpDelete("{accountNumber}")]
         public async Task<IActionResult> DeleteBankAccount(int accountNumber) {
             var account = await _context.BankAccounts.FindAsync(accountNumber);
@@ -132,18 +134,18 @@ namespace LocalDBWebApiUsingEF.Controllers {
             return NoContent();
         }
 
-        // GET: api/BankAccounts/{accountNumber}/transactions TODO: TEST
+        // GET: api/BankAccounts/{accountNumber}/transactions
         [HttpGet("{accountNumber}/transactions")]
         public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsForAccount(int accountNumber) {
-            var account = await _context.BankAccounts
-                                        .Include(b => b.Transactions)
-                                        .FirstOrDefaultAsync(b => b.AccountNumber == accountNumber);
+            var fromTransactions = await _context.Transactions
+                                                 .Where(t => t.FromAccountNumber == accountNumber)
+                                                 .ToListAsync();
 
-            if (account == null) {
-                return NotFound("Bank account not found.");
-            }
+            var toTransactions = await _context.Transactions
+                                               .Where(t => t.ToAccountNumber == accountNumber)
+                                               .ToListAsync();
 
-            return account.Transactions.ToList();
+            return fromTransactions.Concat(toTransactions).ToList();
         }
     }
 }

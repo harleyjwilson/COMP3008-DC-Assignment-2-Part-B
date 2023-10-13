@@ -73,8 +73,6 @@ namespace LocalDBWebApiUsingEF.Data {
             modelBuilder.Entity<Transaction>().HasData(transactions);
 
 
-
-
             // Set Username as the primary key for User
             modelBuilder.Entity<User>()
                     .HasKey(b => b.Username);
@@ -88,13 +86,10 @@ namespace LocalDBWebApiUsingEF.Data {
                     .HasKey(b => b.AccountNumber);
 
             // Set Transaction primary key
-            modelBuilder.Entity<Transaction>()
-                      .HasKey(t => t.TransactionId);
+            modelBuilder.Entity<Transaction>().HasKey(t => t.TransactionId);
 
             // Set Transaction primary key to autoincrement
-            modelBuilder.Entity<Transaction>()
-                    .Property(t => t.TransactionId)
-                    .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Transaction>().Property(t => t.TransactionId).ValueGeneratedOnAdd();
 
             // Configure the relationship between BankAccount and User
             modelBuilder.Entity<BankAccount>()
@@ -104,11 +99,20 @@ namespace LocalDBWebApiUsingEF.Data {
                     .OnDelete(DeleteBehavior.Cascade)  // If a user is deleted, their bank accounts are deleted as well
                     .IsRequired(true);  // UserId is required, but User navigation property is not
 
-            // Configure the relationship between BankAccount and Transaction
-            modelBuilder.Entity<BankAccount>()
-                    .HasMany(b => b.Transactions)
-                    .WithOne(t => t.BankAccount)
-                    .OnDelete(DeleteBehavior.Cascade);
+            // Configure the relationship between Transaction and BankAccount (FromAccount)
+            modelBuilder.Entity<Transaction>()
+                    .HasOne(t => t.FromBankAccount)
+                    .WithMany(b => b.FromTransactions)
+                    .HasForeignKey(t => t.FromAccountNumber)
+                    .OnDelete(DeleteBehavior.Restrict); // Restrict as even if an account is deleted we dont want to delete the transaction
+
+            // Configure the relationship between Transaction and BankAccount (ToAccount)
+            modelBuilder.Entity<Transaction>()
+                    .HasOne(t => t.ToBankAccount)
+                    .WithMany(b => b.ToTransactions)
+                    .HasForeignKey(t => t.ToAccountNumber)
+                    .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete
+
             modelBuilder.Entity<BankAccount>().HasData(bankAccounts);
         }
     }

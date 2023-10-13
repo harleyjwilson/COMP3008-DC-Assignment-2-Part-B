@@ -20,6 +20,13 @@ namespace LocalDBWebApiUsingEF.Models {
         [JsonIgnore]
         public virtual BankAccount? BankAccount { get; set; }
         public string? Description { get; internal set; }
-    }
 
+        // Navigation property for the account that initiated the transaction
+        [JsonIgnore]
+        public virtual BankAccount? FromBankAccount { get; set; }
+
+        // Navigation property for the account that received the transaction
+        [JsonIgnore]
+        public virtual BankAccount? ToBankAccount { get; set; }
+    }
 }
