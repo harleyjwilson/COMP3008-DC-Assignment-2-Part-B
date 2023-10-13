@@ -243,24 +243,7 @@ namespace WebApp.Controllers
                     task.Wait();
                     var bankAccounts = task.Result;
 
-                    List<Transaction> transactions = new List<Transaction>();
-
-                    if (bankAccounts != null)
-                    {
-
-                        foreach (var account in bankAccounts!)
-                        {
-                            Console.WriteLine(account.ToString());
-                            foreach (var transaction in account.Transactions)
-                            {
-                                transactions.Add(transaction);
-                            }
-                        }
-
-                    }
-
                     ViewData["BankAccounts"] = bankAccounts;
-                    ViewData["Transactions"] = transactions;
                     return PartialView("Transactions/AdminTransactionsViewAuthenticated");
                 }
             }

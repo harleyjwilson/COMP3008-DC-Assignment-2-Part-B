@@ -63,8 +63,8 @@
         <select id="adminAccountSorter" name="accoutSorter">
             <option value="Amount Ascending">Amount Ascending</option>
             <option value="Amount Descending">Amount Descending</option>
-            <option value="Account ID Ascending">Account ID Ascending</option>
-            <option value="Account ID Descending">Account ID Descending</option>
+            <option value="Account ID Ascending">From Account ID Ascending</option>
+            <option value="Account ID Descending">From Account ID Descending</option>
         </select>
     </div>
     <div>
@@ -82,23 +82,39 @@
             <th>To Account</th>
             <th>Amount</th>
             <th>Timestamp</th>
+            <th>Description</th>
         </tr>
     </thead>
     <tbody id="transaction-table-body">
-        @if (ViewData.ContainsKey("Transactions") && ViewData["Transactions"] != null)
+        @if (ViewData.ContainsKey("BankAccounts") && ViewData["BankAccounts"] != null)
         {
-            List<Transaction>? transactions = ViewData["Transactions"] as List<Transaction>;
-            if (transactions != null)
+            List<BankAccount>? accounts = ViewData["BankAccounts"] as List<BankAccount>;
+            if (accounts != null)
             {
-                foreach (var transaction in transactions)
+                foreach (var account in accounts)
                 {
-                    <tr>
-                        <td>@transaction.TransactionId</td>
-                        <td>@transaction.FromAccountNumber</td>
-                        <td>@transaction.ToAccountNumber</td>
-                        <td>@transaction.Amount</td>
-                        <td>@transaction.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                    </tr>
+                    foreach(var transaction in account.FromTransactions)
+                    {
+                        <tr>
+                            <td>@transaction.TransactionId</td>
+                            <td>@transaction.FromAccountNumber</td>
+                            <td>@transaction.ToAccountNumber</td>
+                            <td>@transaction.Amount</td>
+                            <td>@transaction.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td>@transaction.Description</td>
+                        </tr>
+                    }
+                    foreach (var transaction in account.ToTransactions)
+                    {
+                        <tr>
+                            <td>@transaction.TransactionId</td>
+                            <td>@transaction.FromAccountNumber</td>
+                            <td>@transaction.ToAccountNumber</td>
+                            <td>@transaction.Amount</td>
+                            <td>@transaction.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td>@transaction.Description</td>
+                        </tr>
+                    }
                 }
             }
         }
