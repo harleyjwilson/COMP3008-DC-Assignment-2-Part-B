@@ -32,9 +32,9 @@ namespace LocalDBWebApiUsingEF.Data {
                     Name = "Admin User",
                     Email = "email0@gmail.com",
                     Address = "Sydney",
-                    Phone = "000-000-0000",
+                    Phone = "061-000-0200",
                     Password = "adminpassword",
-                    Picture = "/resources/images/man1.jpeg"
+                    Picture = UserGenerator.GetImageBytes()
                 }
             };
             modelBuilder.Entity<Admin>().HasData(admin);

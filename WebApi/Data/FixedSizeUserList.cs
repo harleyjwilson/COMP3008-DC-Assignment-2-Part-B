@@ -31,7 +31,7 @@ namespace WebApi.Data {
                 Address = "Washington DC",
                 Phone = "777-777-7777",
                 Password = "userpassword",
-                Picture = null, //TODO: Add picture
+                Picture = UserGenerator.GetImageBytes(),
                 SessionID = "null"
             });
             _bankAccounts.Add(new BankAccount(1, "userjoe") {
@@ -39,12 +39,12 @@ namespace WebApi.Data {
                 Balance = 100000
             });
             _users.Add(new User("userdonald") {
-                Name = "Donald Trump",
+                Name = "Donny Trumpas",
                 Email = "donald@realdonald.com",
                 Address = "Florida",
                 Phone = "666-666-6666",
                 Password = "userpassword",
-                Picture = null, //TODO: Add picture
+                Picture = UserGenerator.GetImageBytes(),
                 SessionID = "null"
             });
             _bankAccounts.Add(new BankAccount(2, "userdonald") {

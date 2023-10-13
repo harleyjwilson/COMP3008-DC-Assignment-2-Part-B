@@ -90,7 +90,7 @@ namespace WebApi.Data {
             return acctNo;
         }
 
-        private byte[] GetImageBytes() {
+        public static byte[] GetImageBytes() {
             return BitmapToByteArray(GenerateBitmap(BITMAP_SIZE));
         }
 
@@ -121,7 +121,7 @@ namespace WebApi.Data {
             }
         }
 
-        private Bitmap GenerateBitmap(int bSize) {
+        private static Bitmap GenerateBitmap(int bSize) {
             Bitmap image = new(bSize, bSize);
             for (int x = 0; x < image.Width; x++) {
                 for (int y = 0; y < image.Height; y++) {
