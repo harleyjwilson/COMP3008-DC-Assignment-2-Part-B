@@ -121,6 +121,12 @@ namespace LocalDBWebApiUsingEF.Data {
             modelBuilder.Entity<BankAccount>().HasData(bankAccounts);
         }
 
+        /// <summary>
+        /// Logging method
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) {
             var entries = ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified);
             foreach (var entry in entries) {
@@ -130,33 +136,57 @@ namespace LocalDBWebApiUsingEF.Data {
             try {
                 return await base.SaveChangesAsync(cancellationToken);
             } catch (Exception ex) {
-                // Handle exceptions here
-                throw;
+                throw new InvalidOperationException("Could not save logs to the database.", ex);
             }
         }
 
+        /// <summary>
+        /// Helper method to add audit logs
+        /// </summary>
+        /// <param name="entry"></param>
         private void AddAuditLogIfModified(EntityEntry entry) {
             string entityName = null;
-            object original = null;
-            object current = null;
+            Dictionary<string, object> original = new Dictionary<string, object>();
+            Dictionary<string, object> current = new Dictionary<string, object>();
+            Dictionary<string, object> modified = new Dictionary<string, object>();
             string action = "Modified";
 
             if (entry.Entity is Admin || entry.Entity is User || entry.Entity is BankAccount) {
                 entityName = entry.Entity.GetType().Name;
-                original = JsonConvert.SerializeObject(entry.OriginalValues.ToObject());
-                current = JsonConvert.SerializeObject(entry.CurrentValues.ToObject());
 
-                var auditLog = new AuditLog {
-                    EntityName = entityName,
-                    Action = action,
-                    OriginalValues = original.ToString(),
-                    CurrentValues = current.ToString(),
-                    Timestamp = DateTime.UtcNow
-                };
+                foreach (var property in entry.OriginalValues.Properties) {
+                    // Exclude the 'Picture' field
+                    if (property.Name == "Picture") {
+                        continue;
+                    }
+                    var originalValue = entry.OriginalValues[property];
+                    var currentValue = entry.CurrentValues[property];
+                    if (!object.Equals(originalValue, currentValue)) {
+                        original[property.Name] = originalValue;
+                        current[property.Name] = currentValue;
+                        modified[property.Name] = new { Original = originalValue, Current = currentValue };
+                    }
+                }
 
-                AuditLogs.Add(auditLog);
+                if (modified.Count > 0) {
+                    var auditLog = new AuditLog {
+                        EntityName = entityName,
+                        Action = action,
+                        OriginalValues = JsonConvert.SerializeObject(original),
+                        CurrentValues = JsonConvert.SerializeObject(current),
+                        Timestamp = DateTime.UtcNow
+                    };
+
+                    AuditLogs.Add(auditLog);
+
+                    // Save to File
+                    string logMessage = $"Timestamp: {auditLog.Timestamp}, Entity: {entityName}, Action: {action}, Modified Fields: {JsonConvert.SerializeObject(modified)}\n";
+                    File.AppendAllText("AuditLogs.txt", logMessage);
+                }
             }
         }
+
+
 
 
     }
