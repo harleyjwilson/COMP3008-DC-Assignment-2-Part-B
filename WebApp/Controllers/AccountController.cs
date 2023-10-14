@@ -27,9 +27,6 @@ namespace WebApp.Controllers
             }
             return PartialView("AccountViewDefault");
         }
-
-        
-
     }
 }
 

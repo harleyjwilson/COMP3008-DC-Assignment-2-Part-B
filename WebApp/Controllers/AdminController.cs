@@ -220,7 +220,7 @@ namespace WebApp.Controllers
                             return PartialView("Users/AdminUsersViewAuthenticated");
                         }
                     }
-                    catch (AggregateException ex) // HttpRequestException
+                    catch (AggregateException ex)
                     {
                         Console.WriteLine("Unable to find user: " + ex.Message);
                         return PartialView("Users/AdminUsersErrorView");

@@ -1,8 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LocalDBWebApiUsingEF.Models {
-    public class BankAccount {
-        public BankAccount(int AccountNumber, string UserUsername) {
+namespace LocalDBWebApiUsingEF.Models
+{
+    public class BankAccount
+    {
+        public BankAccount(int AccountNumber, string UserUsername)
+        {
             this.AccountNumber = AccountNumber;
             this.UserUsername = UserUsername!;
         }
@@ -10,8 +13,8 @@ namespace LocalDBWebApiUsingEF.Models {
         public int AccountNumber { get; set; }
         public string? AccountHolderName { get; set; }
         public double Balance { get; set; }
-        // Foreign Key to User
 
+        // Foreign Key to User
         public string UserUsername { get; set; }
 
         // Navigation Property to User (optional but recommended for EF operations)
@@ -23,6 +26,5 @@ namespace LocalDBWebApiUsingEF.Models {
 
         // Transactions received to this account
         public virtual ICollection<Transaction> ToTransactions { get; set; } = new List<Transaction>();
-
     }
 }

@@ -1,6 +1,9 @@
-﻿namespace LocalDBWebApiUsingEF.Models {
-    public class User {
-        public User(string? Username) {
+﻿namespace LocalDBWebApiUsingEF.Models
+{
+    public class User
+    {
+        public User(string? Username)
+        {
             this.Username = Username!;
         }
 

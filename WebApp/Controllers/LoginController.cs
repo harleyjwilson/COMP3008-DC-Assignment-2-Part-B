@@ -21,18 +21,6 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                // var cookieSessionID = Request.Cookies["SessionID"];
-                // using (var client = new HttpClient())
-                // {
-                //     client.BaseAddress = new Uri("http://localhost:5181/");
-                //     var task = client.GetFromJsonAsync<User>("api/users/" + Request.Cookies["Username"]);
-                //     task.Wait();
-                //     var verifyUser = task.Result;
-                //     if (verifyUser != null && verifyUser.SessionID == cookieSessionID)
-                //     {
-                //         return PartialView("LoginAuthenticatedView");
-                //     }
-                // }
                 if (verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     return PartialView("LoginAuthenticatedView");
@@ -48,11 +36,6 @@ namespace WebApp.Controllers
         {
             if (Request.Cookies.ContainsKey("SessionID"))
             {
-                // var cookieValue = Request.Cookies["SessionID"];
-                // if (cookieValue == "1234567")
-                // {
-                //     return PartialView("LoginAuthenticatedView");
-                // }
                 if (verifySessionID(Request.Cookies["Username"], Request.Cookies["SessionID"]))
                 {
                     return PartialView("LoginAuthenticatedView");
@@ -93,11 +76,6 @@ namespace WebApp.Controllers
             return Json(response);
         }
 
-        // public IActionResult Index()
-        // {
-        //     return View();
-        // }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -123,7 +101,7 @@ namespace WebApp.Controllers
                         return true;
                     }
                 }
-                catch (AggregateException) 
+                catch (AggregateException)
                 {
                     return false;
                 }

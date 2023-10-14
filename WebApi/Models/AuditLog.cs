@@ -1,5 +1,7 @@
-﻿namespace WebApi.Models {
-    public class AuditLog {
+﻿namespace WebApi.Models
+{
+    public class AuditLog
+    {
         public int Id { get; set; }
         public string EntityName { get; set; }
         public string Action { get; set; }

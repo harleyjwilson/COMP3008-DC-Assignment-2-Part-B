@@ -6,22 +6,6 @@ namespace WebApp.Models
 {
     public class Transaction
     {
-        //public int TransactionId { get; set; }
-
-        //[Required]
-        //public int FromAccountNumber { get; set; }
-
-        //[Required]
-        //public int ToAccountNumber { get; set; }
-
-        //[Required]
-        //public double Amount { get; set; }
-
-        //public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-
-        //// Foreign Key to User
-        //[JsonIgnore]
-        //public virtual BankAccount? BankAccount { get; set; }
         public int TransactionId { get; set; }
 
         [Required]
@@ -38,6 +22,7 @@ namespace WebApp.Models
         // Foreign Key to User
         [JsonIgnore]
         public virtual BankAccount? BankAccount { get; set; }
+
         public string? Description { get; set; }
 
         // Navigation property for the account that initiated the transaction
@@ -48,5 +33,4 @@ namespace WebApp.Models
         [JsonIgnore]
         public virtual BankAccount? ToBankAccount { get; set; }
     }
-
 }

@@ -5,9 +5,12 @@ using Newtonsoft.Json;
 using WebApi.Data;
 using WebApi.Models;
 
-namespace LocalDBWebApiUsingEF.Data {
-    public class DBManager : DbContext {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+namespace LocalDBWebApiUsingEF.Data
+{
+    public class DBManager : DbContext
+    {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
             optionsBuilder.UseSqlite(@"Data Source = BankDB.db;");
         }
 
@@ -18,7 +21,8 @@ namespace LocalDBWebApiUsingEF.Data {
 
         public DbSet<AuditLog> AuditLogs { get; set; } // Add the AuditLogs DbSet
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             //Get randomly generated users
             List<User> users = FixedSizeUserList.GetInstance().GetUsers();
             List<BankAccount> bankAccounts = FixedSizeUserList.GetInstance().GetBankAccounts();
@@ -45,13 +49,15 @@ namespace LocalDBWebApiUsingEF.Data {
 
             int transactionIdCounter = 1; // Start the counter for TransactionId
 
-            for (int i = 0; i < 15; i++) { //Create 15 transactions
-                                           // Randomly pick a sender account
+            for (int i = 0; i < 15; i++)
+            { //Create 15 transactions
+              // Randomly pick a sender account
                 BankAccount senderAccount = bankAccounts[random.Next(bankAccounts.Count)];
 
                 // Randomly pick a receiver account. Ensures it's not the same as sender.
                 BankAccount receiverAccount;
-                do {
+                do
+                {
                     receiverAccount = bankAccounts[random.Next(bankAccounts.Count)];
                 } while (senderAccount.AccountNumber == receiverAccount.AccountNumber);
 
@@ -59,7 +65,8 @@ namespace LocalDBWebApiUsingEF.Data {
                 double transactionAmount = Math.Round(random.NextDouble() * senderAccount.Balance);
 
                 // Creates transaction record
-                transactions.Add(new Transaction {
+                transactions.Add(new Transaction
+                {
                     TransactionId = transactionIdCounter,
                     FromAccountNumber = senderAccount.AccountNumber,
                     ToAccountNumber = receiverAccount.AccountNumber,
@@ -127,15 +134,20 @@ namespace LocalDBWebApiUsingEF.Data {
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
             var entries = ChangeTracker.Entries().Where(entry => entry.State == EntityState.Modified);
-            foreach (var entry in entries) {
+            foreach (var entry in entries)
+            {
                 AddAuditLogIfModified(entry);
             }
 
-            try {
+            try
+            {
                 return await base.SaveChangesAsync(cancellationToken);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new InvalidOperationException("Could not save logs to the database.", ex);
             }
         }
@@ -144,32 +156,39 @@ namespace LocalDBWebApiUsingEF.Data {
         /// Helper method to add audit logs
         /// </summary>
         /// <param name="entry"></param>
-        private void AddAuditLogIfModified(EntityEntry entry) {
+        private void AddAuditLogIfModified(EntityEntry entry)
+        {
             string entityName = null;
             Dictionary<string, object> original = new Dictionary<string, object>();
             Dictionary<string, object> current = new Dictionary<string, object>();
             Dictionary<string, object> modified = new Dictionary<string, object>();
             string action = "Modified";
 
-            if (entry.Entity is Admin || entry.Entity is User || entry.Entity is BankAccount) {
+            if (entry.Entity is Admin || entry.Entity is User || entry.Entity is BankAccount)
+            {
                 entityName = entry.Entity.GetType().Name;
 
-                foreach (var property in entry.OriginalValues.Properties) {
+                foreach (var property in entry.OriginalValues.Properties)
+                {
                     // Exclude the 'Picture' field
-                    if (property.Name == "Picture") {
+                    if (property.Name == "Picture")
+                    {
                         continue;
                     }
                     var originalValue = entry.OriginalValues[property];
                     var currentValue = entry.CurrentValues[property];
-                    if (!object.Equals(originalValue, currentValue)) {
+                    if (!object.Equals(originalValue, currentValue))
+                    {
                         original[property.Name] = originalValue;
                         current[property.Name] = currentValue;
                         modified[property.Name] = new { Original = originalValue, Current = currentValue };
                     }
                 }
 
-                if (modified.Count > 0) {
-                    var auditLog = new AuditLog {
+                if (modified.Count > 0)
+                {
+                    var auditLog = new AuditLog
+                    {
                         EntityName = entityName,
                         Action = action,
                         OriginalValues = JsonConvert.SerializeObject(original),

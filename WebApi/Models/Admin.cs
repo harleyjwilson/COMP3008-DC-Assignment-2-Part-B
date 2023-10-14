@@ -1,6 +1,9 @@
-﻿namespace LocalDBWebApiUsingEF.Models {
-    public class Admin {
-        public Admin(string? Username) {
+﻿namespace LocalDBWebApiUsingEF.Models
+{
+    public class Admin
+    {
+        public Admin(string? Username)
+        {
             this.Username = Username!;
         }
 

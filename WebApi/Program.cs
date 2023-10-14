@@ -7,8 +7,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DBManager>();
 
 // Add CORS services
-builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", policy => {
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader();
@@ -18,13 +20,15 @@ builder.Services.AddCors(options => {
 var app = builder.Build();
 
 // Ensure the database is created
-using (var scope = app.Services.CreateScope()) {
+using (var scope = app.Services.CreateScope())
+{
     var context = scope.ServiceProvider.GetRequiredService<DBManager>();
     context.Database.EnsureCreated();
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) {
+if (!app.Environment.IsDevelopment())
+{
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
